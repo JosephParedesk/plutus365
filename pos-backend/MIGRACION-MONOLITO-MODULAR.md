@@ -198,6 +198,18 @@ antes de seguir.
       su `.env` nuevo (`DB_PASSWORD`, mismo patrón que el resto).
       Rollback si algo falla: volver el `uri` de esa ruta a
       `http://localhost:8083` en `gateway/application.yaml`.
+- [x] **Probar el frontend real contra el cutover** (2026-09-11) — stack
+      completo levantado (`levantar-todo.ps1` + `pnpm dev`), sesión inyectada
+      con un JWT válido (mismo mecanismo de prueba, sin crear una empresa
+      nueva en la base real) y ejercitado el módulo de Categorías dentro de
+      Inventario por la UI de verdad: listar (badge mostró 12, coincide),
+      crear "Prueba cutover UI" (toast "Categoría creada", badge a 13) y
+      eliminar (Popconfirm, toast "Categoría eliminada", vuelta a 12).
+      Confirmado por `read_network_requests` que las 8 llamadas (`save`,
+      `listar` x3, `eliminar`) fueron todas a `localhost:8090` (el gateway),
+      cero llamadas al puerto 8083 viejo. `categoriaService.ts` no necesitó
+      ningún cambio — el cutover es completamente transparente para el
+      frontend.
 - [ ] Migrar: proveedor, cliente, subscription-service, auth
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
