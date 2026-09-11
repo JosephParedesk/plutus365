@@ -68,6 +68,27 @@ Servicio más conectado (migrar de último):
   ni `.mapper.*` es visible desde otro módulo — eso sigue siendo interno,
   igual que hoy.
 
+### Patrón: colisiones de nombre entre módulos (checklist para cada migración)
+
+Cada microservicio standalone tenía su propio `ApplicationContext` de Spring,
+así que nombres de clase repetidos entre servicios nunca chocaban. En el
+monolito todos comparten un solo contexto — esto ya rompió dos veces al migrar
+proveedor junto a categoria. Antes de dar por terminada la migración de
+CUALQUIER módulo nuevo, revisar:
+
+1. **`GlobalExceptionHandler`**: nunca copiarlo. Ya existe uno compartido en
+   `app/infraestructure/exception/GlobalExceptionHandler.java` — si el
+   handler del microservicio original difiere del compartido (raro, pero
+   verificar con `diff`), hay que decidir cómo reconciliar antes de tirar la
+   copia del módulo.
+2. **`UseCaseConfig`**: si el microservicio origen tiene una clase con ese
+   nombre (todos la tienen), agregar `@Configuration("<modulo>UseCaseConfig")`
+   explícito al copiarla — si no, choca por bean id duplicado con la de
+   cualquier otro módulo ya migrado.
+3. Cualquier otra clase con nombre genérico (`Config`, `Mapper` sin prefijo,
+   etc.) — revisar si el microservicio origen tiene alguna así antes de
+   copiar tal cual.
+
 ## Receta por módulo (repetir exactamente, en orden)
 
 1. Copiar el paquete completo del servicio a `modules/<x>` tal cual (copy-paste,
@@ -210,7 +231,31 @@ antes de seguir.
       cero llamadas al puerto 8083 viejo. `categoriaService.ts` no necesitó
       ningún cambio — el cutover es completamente transparente para el
       frontend.
-- [ ] Migrar: proveedor, cliente, subscription-service, auth
+- [x] **Migrar: proveedor** (2026-09-11) — mismo patrón que categoria,
+      `domain/`, `application/` e `infraestructure/` copiados byte a byte
+      (verificado con `diff -r`). Dos colisiones reales encontradas al
+      convivir con categoria en un solo contexto de Spring (ver "Patrón:
+      colisiones de nombre" más abajo — aplica a TODOS los módulos que
+      falten, revisar en cada uno):
+      1. `GlobalExceptionHandler` duplicado (mismo problema anotado como
+         pendiente al migrar categoria, ahora real). Se consolidó en uno
+         solo compartido en `app/infraestructure/exception/` y se borró la
+         copia de categoria (ya migrada) y no se copió la de proveedor.
+      2. `UseCaseConfig` de categoria y de proveedor son dos clases con el
+         mismo simple name en paquetes distintos → Spring les asigna el
+         mismo bean id por default (`useCaseConfig`) y tira
+         `ConflictingBeanDefinitionException`. Se le puso nombre explícito
+         a cada `@Configuration` (`@Configuration("categoriaUseCaseConfig")`,
+         `@Configuration("proveedorUseCaseConfig")`) — mismo bean, mismo
+         wiring, solo id distinto.
+      Probado en vivo contra la base real: listar, guardar, NIT duplicado
+      (confirma que el exception handler compartido devuelve el mismo 400
+      de siempre) y eliminar. Se volvió a probar categoria en el mismo
+      arranque para confirmar que la consolidación no la rompió — sigue
+      funcionando igual. Todavía NO conectado al gateway (mismo criterio
+      que categoria: cutover es un paso aparte).
+- [ ] Cutover del gateway para proveedor (`Path=/api/pos/proveedores/**` → puerto del monolito)
+- [ ] Migrar: cliente, subscription-service, auth
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
 - [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)

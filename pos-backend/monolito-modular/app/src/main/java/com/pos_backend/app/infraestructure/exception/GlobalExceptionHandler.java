@@ -1,4 +1,4 @@
-package com.pos_backend.categoria.infraestructure.exception;
+package com.pos_backend.app.infraestructure.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +8,11 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+// Compartido por todos los módulos migrados (antes cada microservicio standalone
+// traía su propia copia idéntica de este handler). @RestControllerAdvice es
+// global sobre todo el contexto de Spring, así que dos copias con los mismos
+// @ExceptionHandler(...) chocan ("ambiguous handler") en cuanto conviven dos
+// módulos con controllers — se detectó al migrar proveedor junto a categoria.
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

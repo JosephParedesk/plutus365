@@ -2,3 +2,4 @@ rootProject.name = 'monolito-modular'
 
 include 'app'
 include 'categoria'
+include 'proveedor'

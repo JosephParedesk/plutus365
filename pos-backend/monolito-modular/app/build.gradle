@@ -12,6 +12,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	implementation project(':categoria')
+	implementation project(':proveedor')
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.3.0'
