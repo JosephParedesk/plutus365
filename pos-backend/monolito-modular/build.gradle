@@ -23,6 +23,21 @@ subprojects {
 		}
 	}
 
+	// Mismo BOM de versiones en todos los módulos, apliquen o no el plugin de
+	// Spring Boot (solo `app` lo aplica — los módulos de negocio son librerías).
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.boot:spring-boot-dependencies:4.0.6"
+		}
+	}
+
+	// El plugin de Spring Boot agrega este flag automáticamente; los módulos
+	// de negocio no lo aplican, así que hay que ponerlo a mano o los
+	// @PathVariable/@RequestParam sin nombre explícito fallan en runtime.
+	tasks.withType(JavaCompile).configureEach {
+		options.compilerArgs << '-parameters'
+	}
+
 	tasks.named('test') {
 		useJUnitPlatform()
 	}

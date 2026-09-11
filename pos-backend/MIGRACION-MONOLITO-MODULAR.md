@@ -161,7 +161,31 @@ antes de seguir.
 - [x] Detectar y aplanar los `.git` anidados que quedaban como submódulos (ver aviso arriba)
 - [x] Armar `app` module + estructura Gradle multi-módulo vacía (`pos-backend/monolito-modular/`, compila y el `build` corre verde)
 - [x] ArchUnit: reglas verificables hoy (dominio sin Spring, UseCase sin @Service/@Component). Falta la regla de límites entre módulos — no se puede escribir en serio hasta que exista un segundo módulo real para probarla contra código de verdad
-- [ ] Migrar: categoria, proveedor, cliente, subscription-service, auth
+- [x] **Migrar: categoria** (2026-09-11) — `domain/`, `application/` e
+      `infraestructure/` copiados byte a byte (verificado con `diff -r`, la
+      única diferencia es que no se copió `CategoriaApplication.java`: el
+      bootstrap de Spring Boot de un microservicio standalone no tiene lugar
+      en un módulo librería, `app` es el único entry point). Probado en vivo
+      contra la base de datos `ecommerce` real (GET listar, POST save, DELETE
+      eliminar) por puerto 9000, todavía NO conectado al gateway.
+      Bug real encontrado y arreglado (no de negocio, de config de build):
+      el plugin de Spring Boot agrega el flag de compilador `-parameters`
+      automáticamente; un módulo librería sin ese plugin no lo tenía, y
+      `@PathVariable Long categoriaId` fallaba en runtime con "Name for
+      argument ... not specified". Se agregó `-parameters` a nivel raíz para
+      todos los subprojects — afecta a build.gradle, no a domain/usecase.
+      El smoke test `CategoriaApplicationTests` (`@SpringBootTest`) no podía
+      correr dentro del módulo `categoria` (no hay `@SpringBootApplication`
+      en su mismo paquete ni uno padre ahora que vive en `com.pos_backend.app`).
+      Se reemplazó por un `AppApplicationTests.contextLoads()` equivalente en
+      el módulo `app`, que sí puede levantar todo el contexto real.
+      Pendiente para cuando entre el segundo módulo con su propio
+      `GlobalExceptionHandler`: dos `@RestControllerAdvice` con
+      `@ExceptionHandler(Exception.class)` genérico van a chocar
+      (ambiguous handler) — no se resuelve todavía porque con un solo
+      módulo no hay conflicto real que solucionar.
+- [ ] Decidir y ejecutar el cutover del gateway para categoria (`Path=/api/pos/categorias/**` → puerto del monolito) — deliberadamente no se hizo en el mismo paso que migrar el código (regla 3: cutover de tráfico real es un cambio de comportamiento aparte)
+- [ ] Migrar: proveedor, cliente, subscription-service, auth
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
 - [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)

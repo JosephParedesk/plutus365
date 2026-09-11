@@ -1,9 +1,21 @@
-# Placeholder: todavía no reemplaza a ningún servicio. El puerto real y la
-# migración de rutas del gateway se deciden cuando entre el primer módulo
-# (ver pos-backend/MIGRACION-MONOLITO-MODULAR.md).
+# Todavía no reemplaza a ningún servicio en el gateway (server.port es un
+# puerto de prueba, no el real). Cuando se decida el cutover de categoria,
+# acá se agrega la ruta correspondiente en application.yaml del gateway.
 spring:
   application:
     name: monolito-modular
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:ecommerce}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 
 server:
   port: 9000

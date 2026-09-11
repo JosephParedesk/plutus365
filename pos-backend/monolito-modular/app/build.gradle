@@ -5,8 +5,13 @@ plugins {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// EntityScan / EnableJpaRepositories en AppApplication (los usa el bootstrap
+	// del composition root, no lógica de negocio) necesitan esto en compileClasspath.
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation project(':categoria')
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:1.3.0'
