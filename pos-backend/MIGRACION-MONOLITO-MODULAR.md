@@ -449,7 +449,44 @@ antes de seguir.
       ahora enruta `/api/pos/nomina/**` a `http://localhost:9000` (el
       monolito) en vez de `http://localhost:8092` (nomina-service standalone,
       que sigue levantándose para poder hacer rollback).
-- [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)
+- [x] **Migrar: empresa-service** (2026-09-11) — **sin tests de caracterización
+      esta vez, por pedido explícito del usuario** (priorizó velocidad; ya
+      tenía 0 tests antes, así que no se perdió cobertura existente, pero
+      se se desvía de la regla 7 a propósito, dejarlo anotado). Verificación
+      hecha en vivo en su lugar (ver abajo), no con tests automatizados.
+      `domain/`, `application/` (incluye `CorsConfig`/`WebConfig`, sirven
+      `/uploads/logos/**` como recurso estático fuera del gateway) e
+      `infraestructure/` copiados byte a byte salvo el `http_client` (ver
+      abajo) y el `GlobalExceptionHandler`.
+      **Primer módulo con una dependencia real entre módulos migrados**:
+      `ContabilidadGatewayImpl` llamaba por HTTP a `contabilidad-service`
+      (`GET /cuentas`, dispara la siembra del PUC). Como contabilidad ya
+      está migrado, se reemplazó por una implementación en
+      `infraestructure/driver_adapters/local_client/` que llama directo a
+      `CuentaContableUseCase.listar(empresaId)` — mismo comportamiento
+      (ese método ya dispara la siembra internamente), mismo criterio
+      best-effort (try/catch, nunca tumba la config de la empresa). Bean
+      nombrado explícito (`empresaContabilidadGatewayImpl`) porque
+      `venta-service` y `compra` van a traer una clase con el mismo simple
+      name cuando les toque.
+      `GlobalExceptionHandler`: difiere del compartido en un detalle real
+      (null-safety en `ex.getMessage()` + logging) pero ninguna excepción
+      de `EmpresaUseCase` construye un mensaje nulo hoy — para el
+      comportamiento actual es equivalente, se omitió sin renombrar (no es
+      el caso "auth", donde el formato de respuesta cambiaba de verdad).
+      `@Configuration("empresaUseCaseConfig")` de siempre.
+      `app.upload.dir`/`app.public-url` movidos a `app/application.yaml`;
+      `APP_PUBLIC_URL` default cambia a `http://localhost:9000` (antes
+      `:8088`) porque el logo se sirve directo desde el proceso que lo
+      recibe — los logos ya subidos antes del cutover quedan en la carpeta
+      física vieja de `empresa-service`, no se migraron los archivos (bajo
+      impacto, se resuben si hace falta).
+      Probado en vivo: `PUT /api/pos/empresa` con una empresa nueva aplica
+      los defaults (país Colombia, color de marca, moneda COP) y la llamada
+      local sí siembra las 197 cuentas del PUC (confirmado consultando
+      `/api/pos/contabilidad/cuentas` después). No se probó la subida de
+      logo (multipart) por tiempo — pendiente si hace falta más adelante.
+      Todavía NO conectado al gateway (cutover no pedido esta vez).
 - [ ] Migrar: inventario
 - [ ] Migrar: compra
 - [ ] Migrar: venta-service (escribir tests de caracterización primero — 0 tests hoy)

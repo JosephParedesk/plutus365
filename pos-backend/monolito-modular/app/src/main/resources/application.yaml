@@ -46,3 +46,12 @@ frontend:
   url: ${FRONTEND_URL:http://localhost:5173}
 mail:
   from: ${MAIL_FROM:}
+
+# empresa-service: logo se sirve como recurso estático (no vía gateway), ruta
+# relativa al working dir del proceso. APP_PUBLIC_URL cambia a 9000 porque acá
+# corre el monolito, no el standalone (8088) — logos ya subidos antes del
+# cutover quedan en la carpeta vieja, no se migraron los archivos físicos.
+app:
+  upload:
+    dir: ${UPLOAD_DIR:uploads/logos}
+  public-url: ${APP_PUBLIC_URL:http://localhost:9000}
