@@ -1,6 +1,12 @@
 server:
   port: 8090
 
+# Cutover completo al monolito modular (pos-backend/monolito-modular) el
+# 2026-09-11: los 13 microservicios de abajo ya están migrados, así que
+# todas las rutas apuntan a http://localhost:9000. Cada microservicio
+# standalone sigue corriendo en paralelo (mismo puerto de siempre) para
+# poder hacer rollback ruta por ruta durante el período de quemado — ver
+# MIGRACION-MONOLITO-MODULAR.md para el puerto original de cada uno.
 spring:
   application:
     name: gateway-service
@@ -10,64 +16,54 @@ spring:
         webmvc:
           routes:
             - id: auth-service
-              uri: http://localhost:8080
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/usuario/**
             - id: subscription-service
-              uri: http://localhost:8081
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/planes/**
             - id: subscription-suscripciones
-              uri: http://localhost:8081
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/suscripciones/**
             - id: inventario-service
-              uri: http://localhost:8082
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/surtiana/inventario/**
             - id: categoria-service
-              # Migrado al monolito modular (pos-backend/monolito-modular) el
-              # 2026-09-11. categoria-service standalone (puerto 8083) sigue
-              # corriendo en paralelo para poder hacer rollback (volver este
-              # uri a http://localhost:8083) durante el período de quemado —
-              # ver MIGRACION-MONOLITO-MODULAR.md.
               uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/categorias/**
             - id: proveedor-service
-              uri: http://localhost:8084
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/proveedores/**
             - id: compra-service
-              uri: http://localhost:8085
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/compras/**
             - id: cliente-service
-              uri: http://localhost:8086
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/clientes/**
             - id: venta-service
-              uri: http://localhost:8087
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/ventas/**
             - id: empresa-service
-              uri: http://localhost:8088
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/empresa/**
             - id: facturacion-service
-              uri: http://localhost:8089
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/facturacion/**
             - id: contabilidad-service
-              uri: http://localhost:8091
+              uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/contabilidad/**
             - id: nomina-service
-              # Migrado al monolito modular (pos-backend/monolito-modular) el
-              # 2026-09-11. nomina-service standalone (puerto 8092) sigue
-              # corriendo en paralelo para poder hacer rollback (volver este
-              # uri a http://localhost:8092) durante el período de quemado —
-              # ver MIGRACION-MONOLITO-MODULAR.md.
               uri: http://localhost:9000
               predicates:
                   - Path=/api/pos/nomina/**

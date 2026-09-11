@@ -1,5 +1,6 @@
 package com.pos_backend.app.infraestructure.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -7,12 +8,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 // Compartido por todos los módulos migrados (antes cada microservicio standalone
 // traía su propia copia idéntica de este handler). @RestControllerAdvice es
 // global sobre todo el contexto de Spring, así que dos copias con los mismos
 // @ExceptionHandler(...) chocan ("ambiguous handler") en cuanto conviven dos
 // módulos con controllers — se detectó al migrar proveedor junto a categoria.
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -22,7 +25,7 @@ public class GlobalExceptionHandler {
                 "timestamp", LocalDateTime.now().toString(),
                 "status", 400,
                 "error", "Bad Request",
-                "message", ex.getMessage()
+                "message", Objects.requireNonNullElse(ex.getMessage(), "Error de validación")
         ));
     }
 
@@ -38,6 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
+        log.error("Error inesperado", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "timestamp", LocalDateTime.now().toString(),
                 "status", 500,

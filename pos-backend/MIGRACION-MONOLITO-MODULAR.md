@@ -640,16 +640,41 @@ antes de seguir.
       guardar (no persiste si las credenciales no son válidas) sigue intacta.
       Todavía NO conectado al gateway.
 
-## Todos los módulos están migrados — falta el cutover del resto
+## Cutover del gateway — completo para los 13 módulos (2026-09-11)
 
-Con facturacion-service quedan migrados los 13 módulos. Pendiente: hacer el
-cutover del gateway para los que todavía apuntan a su puerto standalone —
-`proveedor`, `cliente`, `subscription-service`, `auth`, `contabilidad-service`,
-`empresa-service`, `inventario`, `compra`, `venta-service`,
-`facturacion-service` (`categoria` y `nomina` ya tienen su cutover hecho).
-Recién cuando todos estén con el cutover hecho y hayan pasado el período de
-quemado tiene sentido apagar el proceso `gateway` standalone (sus
-interceptores de empresa/permisos pasan a ser filtros del monolito).
+Se hizo "todos de una vez": las 13 rutas de
+`gateway/src/main/resources/application.yaml` (`auth`, `subscription`
+—`/planes` y `/suscripciones`—, `inventario`, `categoria`, `proveedor`,
+`compra`, `cliente`, `venta`, `empresa`, `facturacion`, `contabilidad`,
+`nomina`) ahora apuntan a `http://localhost:9000` (monolito). Cada
+microservicio standalone sigue corriendo en su puerto de siempre en paralelo
+para poder hacer rollback ruta por ruta durante el período de quemado.
 
-- [ ] Cutover del gateway para el resto de los módulos migrados
-- [ ] Apagar proceso gateway standalone
+**Bug real encontrado durante la verificación (no relacionado con el
+cutover en sí, sino con la migración de código):** el `GlobalExceptionHandler`
+compartido del monolito (`app/.../infraestructure/exception/GlobalExceptionHandler.java`)
+se había migrado SIN el `log.error(ex)` que ya se le había agregado a los
+microservicios standalone tras el incidente documentado en la memoria
+`microservicios-500-build-viejo` (2026-08-07) — cualquier 500 en el monolito
+quedaba completamente mudo en consola. Se agregó `@Slf4j` + `log.error("Error
+inesperado", ex)` en el `@ExceptionHandler(Exception.class)`, más
+`Objects.requireNonNullElse(...)` en el de `RuntimeException` (mismo patrón
+que en standalone). Con eso se pudo confirmar que los "500" que aparecían al
+probar `/api/pos/proveedores`, `/clientes`, `/compras`, `/ventas`,
+`/facturacion` y `/categorias` sin el sufijo eran `NoResourceFoundException`
+(404 real — esos controllers exponen `/listar`, no la raíz), no bugs de
+lógica: error de la prueba, no del código.
+
+**Verificación en vivo (2026-09-11)**, monolito (9000) + gateway (8090)
+levantados con datos reales de la empresa demo (`demo.pruebas@plutus365.test`):
+login por `/api/pos/usuario/login` → JWT válido, y `GET .../listar` (o
+equivalente) en 200 a través del gateway para los 10 módulos recién
+cutover-eados, más confirmación de que `categoria` y `nomina` (cutover previo)
+siguen en 200. Log del gateway sin excepciones.
+
+Recién cuando todos hayan pasado el período de quemado tiene sentido apagar
+el proceso `gateway` standalone (sus interceptores de empresa/permisos pasan
+a ser filtros del monolito).
+
+- [x] Cutover del gateway para el resto de los módulos migrados (2026-09-11)
+- [ ] Apagar proceso gateway standalone (pendiente — esperar período de quemado)
