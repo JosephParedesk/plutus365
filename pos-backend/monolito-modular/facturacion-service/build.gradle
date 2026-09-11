@@ -1,0 +1,29 @@
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// El build.gradle original excluía spring-boot-starter-jackson acá porque Boot
+	// 4.1 trae Jackson 3 por defecto (incompatible con el JsonNode clásico que usa
+	// FactusHttpClient). El monolito está en Boot 4.0.6 (ver build.gradle raíz), que
+	// sigue en Jackson 2 clásico igual que el resto de los módulos ya migrados —
+	// la exclusión ya no aplica, se deja afuera a propósito.
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'com.fasterxml.jackson.core:jackson-core'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.google.zxing:core:3.5.3'
+	implementation 'com.google.zxing:javase:3.5.3'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Ya no le pega por HTTP a estos servicios — llama directo a sus UseCase.
+	implementation project(':venta-service')
+	implementation project(':cliente-service')
+	implementation project(':empresa-service')
+	implementation project(':compra')
+	implementation project(':proveedor')
+	implementation project(':nomina')
+	implementation project(':inventario')
+	implementation project(':contabilidad-service')
+}

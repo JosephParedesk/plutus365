@@ -15,6 +15,15 @@ spring:
   sql:
     init:
       mode: always
+  # facturacion-service: los otros módulos migrados (venta, cliente, empresa,
+  # etc.) devuelven más campos de los que facturacion necesita al mapear sus
+  # propios *Remota DTO — sin esto Jackson rechazaría esas respuestas. Es una
+  # relajación global (tolerar campos desconocidos), no una restricción nueva,
+  # así que no debería afectar a ningún otro módulo que dependa de rechazar
+  # JSON con campos extra (ninguno lo hace hoy).
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
   mail:
     host: ${MAIL_HOST:smtp-relay.brevo.com}
     port: ${MAIL_PORT:587}
@@ -55,3 +64,14 @@ app:
   upload:
     dir: ${UPLOAD_DIR:uploads/logos}
   public-url: ${APP_PUBLIC_URL:http://localhost:9000}
+
+# facturacion-service — DIAN / Factus. CERT_ENCRYPTION_KEY tiene que ser
+# EXACTAMENTE el mismo valor que ya usaba facturacion-service standalone: las
+# credenciales de Factus de cada empresa ya están cifradas en la base real con
+# esa llave — cambiarla las vuelve indescifrables (ver aviso en CLAUDE.md).
+cert:
+  encryption:
+    key: ${CERT_ENCRYPTION_KEY:}
+factus:
+  base:
+    url: ${FACTUS_BASE_URL:https://api-sandbox.factus.com.co}

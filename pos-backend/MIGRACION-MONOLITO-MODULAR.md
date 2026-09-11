@@ -583,5 +583,73 @@ antes de seguir.
       balanceado (Caja/Venta de mercancías/IVA por pagar), y la vista previa
       del correo del comprobante (ejercita `EmpresaConsultaGateway`, 200 OK).
       Todavía NO conectado al gateway.
-- [ ] Migrar: facturacion-service
+- [x] **Migrar: facturacion-service** (2026-09-11) — sin tests (pedido
+      explícito). El módulo más grande y más conectado de todo el proyecto
+      (110 archivos, ~5400 líneas, 9 UseCase: ConfiguracionDian, Factura,
+      NotaCredito, NotaDebito, DocumentoSoporte, NominaElectronica,
+      NotaAjusteDocumentoSoporte, NotaAjusteNomina, RecepcionDocumento).
+      `domain/`, `application/` e `infraestructure/` copiados byte a byte,
+      salvo los 9 `http_client` y el `GlobalExceptionHandler` (mismo caso
+      sin impacto real que empresa-service/compra/venta). Los paquetes
+      `factus/` y `certificado/` (integración real con Factus, proveedor
+      tecnológico DIAN externo) se copiaron intactos — esas SÍ siguen siendo
+      llamadas HTTP reales, Factus no es un servicio propio, no hay nada que
+      convertir a local ahí.
+      **Nueve llamadas HTTP convertidas a locales** — los ocho servicios que
+      consultaba (venta, cliente, empresa, compra, proveedor, nomina,
+      inventario, contabilidad) ya estaban todos migrados:
+      `ClienteConsultaGatewayImpl`, `CompraConsultaGatewayImpl`,
+      `EmpleadoConsultaGatewayImpl`, `EmpresaConsultaGatewayImpl`,
+      `NominaConsultaGatewayImpl`, `ProveedorConsultaGatewayImpl`,
+      `VentaConsultaGatewayImpl` → llamada directa + traducción de
+      `NoSuchElementException` a `null` (mismo patrón que los 404 HTTP de
+      antes); `ContabilidadNotaGatewayImpl` →
+      `AsientoContableUseCase.generarDesdeNotaCredito`; `StockNotaGatewayImpl`
+      → `ProductoUseCase.incrementarStock`/`descontarStock`. Los 9 con bean
+      nombrado explícito — 3 de ellos (`EmpresaConsultaGatewayImpl`,
+      `ProveedorConsultaGatewayImpl`, y de paso `JavaMailEmailGatewayImpl`
+      del paquete `mail/`) colisionaban con clases del mismo simple name que
+      ya existían en `venta-service`/`inventario`.
+      **Dos hallazgos reales durante la migración**:
+      1. El `build.gradle` original excluía `spring-boot-starter-jackson`
+         porque Boot 4.1 trae Jackson 3 por defecto (incompatible con el
+         `JsonNode` clásico que usa `FactusHttpClient`). El monolito está en
+         Boot 4.0.6 (como nomina/compra/venta-service, todos escritos
+         originalmente contra 4.1.0), que sigue en Jackson 2 clásico — la
+         exclusión ya no aplica, se dejó afuera a propósito.
+      2. **Se me había olvidado copiar `src/main/resources`** (solo copié
+         `src/main/java`) — `DivipolaMunicipioResolver` explotó al arrancar
+         buscando `divipola-municipios.json` (91KB, tabla de municipios DIAN)
+         que nunca se copió. Corregido.
+      También: `spring.jackson.deserialization.fail-on-unknown-properties=false`
+      y `cert.encryption.key`/`factus.base.url` movidos a `app/application.yaml`
+      y al `.env` del monolito — la llave de cifrado es el mismo valor exacto
+      que ya usa el standalone (cambiarla volvería indescifrables las
+      credenciales de Factus que cada empresa ya tiene guardadas en la base
+      real — ver aviso en `CLAUDE.md`).
+      **Probado en vivo, incluyendo una llamada HTTP real a Factus (sandbox)**:
+      configurar empresa, crear producto con stock, registrar venta, generar
+      factura desde esa venta → la cadena interna (venta → cliente/consumidor
+      final → empresa, las tres por llamada local) funcionó de punta a punta
+      y se detuvo exactamente donde correspondía (sin credenciales de Factus
+      configuradas para esta empresa de prueba, error de negocio correcto,
+      no un error técnico). Guardar configuración DIAN con credenciales
+      falsas hizo una llamada HTTP real a `api-sandbox.factus.com.co`, que
+      respondió 401 `invalid_client` — confirma que `CertificadoCrypto` y
+      `FactusHttpClient` funcionan igual, y que la validación previa a
+      guardar (no persiste si las credenciales no son válidas) sigue intacta.
+      Todavía NO conectado al gateway.
+
+## Todos los módulos están migrados — falta el cutover del resto
+
+Con facturacion-service quedan migrados los 13 módulos. Pendiente: hacer el
+cutover del gateway para los que todavía apuntan a su puerto standalone —
+`proveedor`, `cliente`, `subscription-service`, `auth`, `contabilidad-service`,
+`empresa-service`, `inventario`, `compra`, `venta-service`,
+`facturacion-service` (`categoria` y `nomina` ya tienen su cutover hecho).
+Recién cuando todos estén con el cutover hecho y hayan pasado el período de
+quemado tiene sentido apagar el proceso `gateway` standalone (sus
+interceptores de empresa/permisos pasan a ser filtros del monolito).
+
+- [ ] Cutover del gateway para el resto de los módulos migrados
 - [ ] Apagar proceso gateway standalone
