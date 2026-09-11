@@ -3,9 +3,12 @@ server:
 
 # Cutover completo al monolito modular (pos-backend/monolito-modular) el
 # 2026-09-11: los 13 microservicios de abajo ya están migrados, así que
-# todas las rutas apuntan a http://localhost:9000. Cada microservicio
-# standalone sigue corriendo en paralelo (mismo puerto de siempre) para
-# poder hacer rollback ruta por ruta durante el período de quemado — ver
+# todas las rutas apuntan a MONOLITO_URL (default http://localhost:9000,
+# funciona igual que antes en desarrollo local). En docker-compose se
+# sobreescribe a http://monolito:9000 porque ahí los contenedores se ven
+# por nombre de servicio, no por localhost. Cada microservicio standalone
+# sigue corriendo en paralelo (mismo puerto de siempre) para poder hacer
+# rollback ruta por ruta durante el período de quemado — ver
 # MIGRACION-MONOLITO-MODULAR.md para el puerto original de cada uno.
 spring:
   application:
@@ -16,7 +19,7 @@ spring:
         webmvc:
           routes:
             - id: auth-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/usuario/**
             # subscription-service (planes y suscripciones) deshabilitado
@@ -27,43 +30,43 @@ spring:
             # Reactivar agregando de nuevo estas dos rutas apuntando a
             # http://localhost:9000.
             - id: inventario-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/surtiana/inventario/**
             - id: categoria-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/categorias/**
             - id: proveedor-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/proveedores/**
             - id: compra-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/compras/**
             - id: cliente-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/clientes/**
             - id: venta-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/ventas/**
             - id: empresa-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/empresa/**
             - id: facturacion-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/facturacion/**
             - id: contabilidad-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                 - Path=/api/pos/contabilidad/**
             - id: nomina-service
-              uri: http://localhost:9000
+              uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:
                   - Path=/api/pos/nomina/**
 
