@@ -528,7 +528,35 @@ antes de seguir.
       `{"error":...}` propio de inventario mientras categoría sigue con el
       formato compartido — confirma que el scoping del handler funciona.
       Todavía NO conectado al gateway.
-- [ ] Migrar: compra
+- [x] **Migrar: compra** (2026-09-11) — sin tests (pedido explícito, sigue
+      igual que los últimos módulos; standalone ya tenía solo el smoke test).
+      `domain/`, `application/` e `infraestructure/` copiados byte a byte,
+      salvo los 2 `http_client` y el `GlobalExceptionHandler` (idéntico al
+      caso de empresa-service: null-safety + logging, sin impacto real
+      porque `CompraUseCase` siempre construye mensajes explícitos — se
+      omitió sin renombrar).
+      **Dos llamadas HTTP más convertidas a locales** — contabilidad e
+      inventario, ambos ya migrados:
+      `ContabilidadGatewayImpl` → `AsientoContableUseCase.generarDesdeCompra`
+      (arma `CompraParaAsiento` a mano desde `Compra`/`CompraItem`/`FormaPago`,
+      mismo tratamiento especial de `RECIBO_PAGO` sintetizando una forma de
+      pago desde `origenDinero` texto libre); `StockGatewayImpl` →
+      `ProductoUseCase.registrarCompra` / `descontarStock` (para el
+      `revertir` de compensación). Los 2 con bean nombrado explícito.
+      `pdfbox` esta vez SÍ está en uso real (`ImportadorFacturaGatewayImpl`,
+      importación de facturas de proveedor desde PDF) — se mantuvo en el
+      `build.gradle` del módulo, a diferencia de nomina donde era dependencia
+      muerta.
+      **Probado en vivo el patrón de compensación de punta a punta, no solo
+      el happy path**: registré una compra contra una empresa cuyo PUC
+      todavía no existía → contabilización falló → la compra se revirtió
+      (`ERROR_CONTABILIZACION`, stock devuelto — confirmado en el kárdex:
+      `ENTRADA_COMPRA` seguido de una `SALIDA_VENTA` de reversión) exactamente
+      como documenta `CLAUDE.md`. Sembré el PUC y reintenté: compra
+      `REGISTRADA`, producto creado en inventario, asiento contable generado
+      y balanceado (Inventario/IVA por pagar/Caja, debe==haber). El patrón de
+      compensación sigue intacto con las llamadas locales, no solo con HTTP.
+      Todavía NO conectado al gateway.
 - [ ] Migrar: venta-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: facturacion-service
 - [ ] Apagar proceso gateway standalone
