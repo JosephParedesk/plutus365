@@ -557,6 +557,31 @@ antes de seguir.
       y balanceado (Inventario/IVA por pagar/Caja, debe==haber). El patrón de
       compensación sigue intacto con las llamadas locales, no solo con HTTP.
       Todavía NO conectado al gateway.
-- [ ] Migrar: venta-service (escribir tests de caracterización primero — 0 tests hoy)
+- [x] **Migrar: venta-service** (2026-09-11) — sin tests (pedido explícito,
+      sigue igual que los últimos módulos). El módulo más grande migrado
+      hasta ahora (~3600 líneas, 8 UseCase: Venta, Caja, Cotización,
+      FacturaRecurrente, ReciboCaja, Remisión, NotaDébitoVenta,
+      ConfiguracionRecibo). `domain/`, `application/` e `infraestructure/`
+      copiados byte a byte, salvo los 4 `http_client` y el
+      `GlobalExceptionHandler` (mismo caso que empresa-service/compra: sin
+      impacto real, se omitió sin renombrar).
+      **Cuatro llamadas HTTP convertidas a locales** — los tres servicios que
+      consultaba (contabilidad, empresa, inventario) ya estaban migrados:
+      `ContabilidadGatewayImpl` → `AsientoContableUseCase.generarDesdeVenta`;
+      `EmpresaConsultaGatewayImpl` → `EmpresaUseCase.obtenerConfiguracion`
+      (el 404 HTTP que antes se traducía a `null` ahora es
+      `NoSuchElementException` capturada y traducida a `null` igual);
+      `ReciboContabilidadGatewayImpl` → `AsientoContableUseCase.generarDesdeReciboCaja`;
+      `StockGatewayImpl` → `ProductoUseCase.descontarStock`/`incrementarStock`
+      directo (sin ningún try/catch de conversión, los mensajes ya coinciden).
+      Los 4 con bean nombrado explícito.
+      Compiló y **pasó las pruebas en vivo a la primera** (sin ningún ajuste
+      de por medio, ni siquiera el flag `-parameters` ni nada — la receta ya
+      está probada). Probado: configurar empresa, crear producto con stock,
+      registrar una venta con IVA (desglose correcto: 17478.99 + 3321.01 =
+      20800), stock descontado (20→18), asiento contable generado y
+      balanceado (Caja/Venta de mercancías/IVA por pagar), y la vista previa
+      del correo del comprobante (ejercita `EmpresaConsultaGateway`, 200 OK).
+      Todavía NO conectado al gateway.
 - [ ] Migrar: facturacion-service
 - [ ] Apagar proceso gateway standalone
