@@ -18,3 +18,11 @@ spring:
 
 server:
   port: 9000
+
+# subscription-service (NotificationGatewayImpl): apunta a un servicio de
+# notificaciones que nunca se construyó — falla y se traga la excepción hoy
+# mismo en el standalone (ver catch en NotificationGatewayImpl). Se copia el
+# mismo valor tal cual, arreglarlo es un cambio de comportamiento aparte.
+notification:
+  service:
+    url: http://localhost:9092/api/notification/send

@@ -88,6 +88,13 @@ CUALQUIER módulo nuevo, revisar:
 3. Cualquier otra clase con nombre genérico (`Config`, `Mapper` sin prefijo,
    etc.) — revisar si el microservicio origen tiene alguna así antes de
    copiar tal cual.
+4. **`@Bean` con nombre de método genérico** dentro de un `UseCaseConfig`
+   (ej. `restTemplate()`, `objectMapper()`): el id del bean es el nombre del
+   método, no el de la clase — dos módulos que declaren el mismo choca igual
+   que el `@Configuration` sin nombre. `subscription-service` ya declara
+   `restTemplate()`; revisar antes de migrar cualquier módulo que use
+   `RestTemplate`/`RestClient` en su `http_client` (compra, venta,
+   facturacion, empresa) si repite el mismo nombre de método.
 
 ## Receta por módulo (repetir exactamente, en orden)
 
@@ -265,6 +272,39 @@ antes de seguir.
       de validación correcto), buscar por documento, eliminar y confirmar
       que ya no aparece en el listado. Todavía NO conectado al gateway.
 - [ ] Cutover del gateway para cliente (`Path=/api/pos/clientes/**` → puerto del monolito)
+- [x] **Migrar: subscription-service** (2026-09-11) — mismo patrón, `domain/`,
+      `application/` e `infraestructure/` copiados byte a byte (`diff -r`,
+      incluye `PlanController`, `SuscripcionController`, `NotificationGatewayImpl`
+      y el DTO). `@Configuration("subscriptionUseCaseConfig")` de nuevo.
+      Este módulo agregó dos cosas nuevas al `app`:
+      - `notification.service.url` como propiedad de `app/application.yaml`
+        (antes vivía en el `application.properties` del standalone). Sigue
+        apuntando a un servicio de notificaciones que **nunca se construyó**
+        (`localhost:9092/api/notification/send`) — `NotificationGatewayImpl`
+        ya se traga esa excepción hoy en el standalone (falla silenciosa,
+        no rompe el flujo de creación de suscripción). Se copió tal cual,
+        arreglarlo es aparte.
+      - Un `@Bean RestTemplate restTemplate()`. Nombre de método genérico:
+        si otro módulo migrado más adelante (compra, venta, facturacion,
+        empresa — los que hoy usan `RestTemplate`/`RestClient` para sus
+        `http_client`) declara otro bean `restTemplate()`, va a chocar igual
+        que `UseCaseConfig`. Agregado a la checklist de colisiones.
+      Probado en vivo: listar planes (los 3 sembrados), módulos por plan,
+      `tiene-acceso` (plan Básico sin acceso a CONTABILIDAD → `false`,
+      correcto), crear suscripción (14 días gratis, estado PENDIENTE),
+      buscar por usuario, cancelar.
+      **Hallazgo real pero preexistente, no causado por esta migración**:
+      la tabla `plan_features` no tiene constraint único, y `data.sql` corre
+      con `INSERT IGNORE` en cada arranque de cualquier servicio que la
+      toque — sin un UNIQUE que `IGNORE` pueda disparar, cada restart le
+      duplica las 6 filas de cada plan. Hoy tiene **35 copias** de cada fila
+      del plan Profesional/Empresarial en la base real (acumulado de
+      reinicios de este mismo día de pruebas, standalone y monolito por
+      igual — es la misma tabla). No lo limpié: este entorno no tiene
+      cliente `mysql` ni conector Python instalado. Pendiente para el
+      usuario: deduplicar `plan_features` a mano (dejar una fila por
+      `(plan_id, modulo)`) y evaluar agregar el UNIQUE constraint — eso sí
+      es un cambio de comportamiento deliberado, no se hace de paso.
 - [ ] Migrar: subscription-service, auth
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
