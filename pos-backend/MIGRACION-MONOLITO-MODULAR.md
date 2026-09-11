@@ -119,18 +119,39 @@ Servicio más conectado (migrar de último):
 8. **Rollback = mover la ruta del gateway al puerto viejo.** Por eso ningún
    servicio standalone se borra hasta cumplir el período de quemado.
 
+## Auditoría de tests (relevada 2026-09-11)
+
+Conteo de archivos en `src/test/java` por servicio:
+
+| Servicio | Tests | Nota |
+|---|---|---|
+| inventario | 13 | cobertura real |
+| auth | 9 | cobertura real |
+| facturacion-service | 5 | cobertura real |
+| subscription-service, categoria, proveedor, compra, gateway | 1 c/u | **solo el smoke test `contextLoads()` generado por Spring, cero cobertura real** (confirmado en los 5) |
+| nomina | 1 | test real pero acotado (`ConceptoHoraExtra`), no smoke test — igual insuficiente como red de seguridad |
+| cliente-service, venta-service, empresa-service, contabilidad-service | 0 | **sin ningún test** |
+
+Esto endurece la regla 7: `venta-service` y `contabilidad-service` son los
+módulos con más lógica de negocio sensible (patrón de compensación, asientos
+idempotentes) y **cero red de seguridad**. No se migran sin escribir antes
+tests de caracterización — no es opcional para esos dos.
+
 ## Checklist de progreso
 
-- [ ] `git init` + commit línea base
-- [ ] Auditar qué servicios tienen tests en `src/test/java` (probablemente ninguno — confirmar)
+- [x] `git init` + commit línea base (incluyó sacar credenciales reales de
+      `application.properties` de auth/venta/facturacion a `.env`, y el
+      `jwt.secret` compartido con el gateway — no estaba planeado pero era
+      el mismo tipo de problema)
+- [x] Auditar qué servicios tienen tests en `src/test/java` (tabla arriba)
 - [ ] Armar `app` module + estructura Gradle multi-módulo vacía
 - [ ] ArchUnit: reglas de límites entre módulos
 - [ ] Migrar: categoria, proveedor, cliente, subscription-service, auth
-- [ ] Migrar: contabilidad-service
+- [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
-- [ ] Migrar: empresa-service
+- [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: inventario
 - [ ] Migrar: compra
-- [ ] Migrar: venta-service
+- [ ] Migrar: venta-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: facturacion-service
 - [ ] Apagar proceso gateway standalone

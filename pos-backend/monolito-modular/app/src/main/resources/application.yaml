@@ -1,0 +1,9 @@
+# Placeholder: todavía no reemplaza a ningún servicio. El puerto real y la
+# migración de rutas del gateway se deciden cuando entre el primer módulo
+# (ver pos-backend/MIGRACION-MONOLITO-MODULAR.md).
+spring:
+  application:
+    name: monolito-modular
+
+server:
+  port: 9000
