@@ -26,12 +26,13 @@ public class UsuarioController {
     private final UsuarioMapper usuarioMapper;
     private final JwtGateway jwtGateway;
 
+    // Registro público deshabilitado temporalmente (2026-09-11, pedido del
+    // usuario) — por ahora solo se permite iniciar sesión con cuentas ya
+    // existentes. Revertir quitando este guard cuando se reactive el alta
+    // de empresas nuevas.
     @PostMapping("/save")
     public ResponseEntity<Usuario> saveUsauraio(@RequestBody UsuarioData usuarioData){
-
-        Usuario usuarioGuardado = usuarioUseCase.guardarUsuario(usuarioMapper.toUsuario(usuarioData));
-
-        return ResponseEntity.ok(usuarioGuardado);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @GetMapping("/buscar/{cedula}")

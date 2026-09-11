@@ -19,14 +19,13 @@ spring:
               uri: http://localhost:9000
               predicates:
                 - Path=/api/pos/usuario/**
-            - id: subscription-service
-              uri: http://localhost:9000
-              predicates:
-                - Path=/api/pos/planes/**
-            - id: subscription-suscripciones
-              uri: http://localhost:9000
-              predicates:
-                - Path=/api/pos/suscripciones/**
+            # subscription-service (planes y suscripciones) deshabilitado
+            # temporalmente (2026-09-11, pedido del usuario): por ahora solo
+            # se permite iniciar sesión, el alta de empresas nuevas vía
+            # planes/registro/pago queda cerrada. Sin ruta acá, el gateway
+            # responde 404 a /api/pos/planes/** y /api/pos/suscripciones/**.
+            # Reactivar agregando de nuevo estas dos rutas apuntando a
+            # http://localhost:9000.
             - id: inventario-service
               uri: http://localhost:9000
               predicates:

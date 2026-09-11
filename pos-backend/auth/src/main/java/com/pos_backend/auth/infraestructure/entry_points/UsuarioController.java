@@ -26,12 +26,14 @@ public class UsuarioController {
     private final UsuarioMapper usuarioMapper;
     private final JwtGateway jwtGateway;
 
+    // Registro público deshabilitado temporalmente (2026-09-11, pedido del
+    // usuario) — por ahora solo se permite iniciar sesión con cuentas ya
+    // existentes. Mismo guard que en el monolito (ver
+    // monolito-modular/auth/.../UsuarioController.java), replicado acá por si
+    // se hace rollback a este standalone durante el período de quemado.
     @PostMapping("/save")
     public ResponseEntity<Usuario> saveUsauraio(@RequestBody UsuarioData usuarioData){
-
-        Usuario usuarioGuardado = usuarioUseCase.guardarUsuario(usuarioMapper.toUsuario(usuarioData));
-
-        return ResponseEntity.ok(usuarioGuardado);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @GetMapping("/buscar/{cedula}")
