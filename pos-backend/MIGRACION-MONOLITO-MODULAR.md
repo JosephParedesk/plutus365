@@ -137,6 +137,20 @@ módulos con más lógica de negocio sensible (patrón de compensación, asiento
 idempotentes) y **cero red de seguridad**. No se migran sin escribir antes
 tests de caracterización — no es opcional para esos dos.
 
+## Aviso: repos anidados aplanados (2026-09-11)
+
+`categoria`, `compra`, `gateway`, `proveedor`, `subscription-service` y
+`pos-frontend` tenían cada uno su propio `.git` interno con remoto propio en
+GitHub (plantillas/proyectos sueltos de antes de unificar todo en
+`C:\plutus365`). El primer `git init` los había registrado como submódulos
+(un puntero al commit, no el contenido), lo que hubiera roto la regla 1 (no
+se puede diffear un módulo si el repo raíz no ve su contenido real). Se les
+quitó el `.git` anidado y se versionó su contenido actual como archivos
+normales — se pierde el historial viejo de esos `.git` (aprobado por el
+usuario), pero ningún archivo ni cambio sin commitear se tocó. Si aparece
+otra carpeta con `.git` propio más adelante, aplicar el mismo tratamiento
+antes de seguir.
+
 ## Checklist de progreso
 
 - [x] `git init` + commit línea base (incluyó sacar credenciales reales de
@@ -144,8 +158,9 @@ tests de caracterización — no es opcional para esos dos.
       `jwt.secret` compartido con el gateway — no estaba planeado pero era
       el mismo tipo de problema)
 - [x] Auditar qué servicios tienen tests en `src/test/java` (tabla arriba)
-- [ ] Armar `app` module + estructura Gradle multi-módulo vacía
-- [ ] ArchUnit: reglas de límites entre módulos
+- [x] Detectar y aplanar los `.git` anidados que quedaban como submódulos (ver aviso arriba)
+- [x] Armar `app` module + estructura Gradle multi-módulo vacía (`pos-backend/monolito-modular/`, compila y el `build` corre verde)
+- [x] ArchUnit: reglas verificables hoy (dominio sin Spring, UseCase sin @Service/@Component). Falta la regla de límites entre módulos — no se puede escribir en serio hasta que exista un segundo módulo real para probarla contra código de verdad
 - [ ] Migrar: categoria, proveedor, cliente, subscription-service, auth
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
