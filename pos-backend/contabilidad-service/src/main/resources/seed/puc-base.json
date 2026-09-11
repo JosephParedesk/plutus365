@@ -1,0 +1,1972 @@
+[
+  {
+    "codigo": "1",
+    "nombre": "Activo",
+    "nivel": "CLASE",
+    "codigoPadre": null,
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "11",
+    "nombre": "Efectivo y equivalentes de efectivo",
+    "nivel": "GRUPO",
+    "codigoPadre": "1",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1105",
+    "nombre": "Caja",
+    "nivel": "CUENTA",
+    "codigoPadre": "11",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "110505",
+    "nombre": "Caja general",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1105",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": "Caja - Bancos",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "11050501",
+    "nombre": "Caja general",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "110505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Caja - Bancos",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "110510",
+    "nombre": "Cajas menores",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1105",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": "Caja - Bancos",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "11051001",
+    "nombre": "Cajas menores",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "110510",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Caja - Bancos",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1110",
+    "nombre": "Bancos",
+    "nivel": "CUENTA",
+    "codigoPadre": "11",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "111005",
+    "nombre": "Moneda nacional",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1110",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": "Caja - Bancos",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "11100501",
+    "nombre": "Banco cuenta corriente",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "111005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Caja - Bancos",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "11100502",
+    "nombre": "Banco cuenta de ahorros",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "111005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Caja - Bancos",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "13",
+    "nombre": "Cuentas por cobrar",
+    "nivel": "GRUPO",
+    "codigoPadre": "1",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1305",
+    "nombre": "Clientes",
+    "nivel": "CUENTA",
+    "codigoPadre": "13",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "130505",
+    "nombre": "Clientes nacionales",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1305",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": "Clientes",
+    "detalleSaldos": "DETALLE_VENCIMIENTOS"
+  },
+  {
+    "codigo": "13050501",
+    "nombre": "Clientes nacionales",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "130505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Clientes",
+    "detalleSaldos": "DETALLE_VENCIMIENTOS"
+  },
+  {
+    "codigo": "1355",
+    "nombre": "Anticipos y avances",
+    "nivel": "CUENTA",
+    "codigoPadre": "13",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "135505",
+    "nombre": "A proveedores",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1355",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": "Proveedores",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "13550501",
+    "nombre": "Anticipos a proveedores",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "135505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Proveedores",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1365",
+    "nombre": "Cuentas por cobrar a trabajadores",
+    "nivel": "CUENTA",
+    "codigoPadre": "13",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "136525",
+    "nombre": "Préstamos a empleados",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1365",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "13652501",
+    "nombre": "Préstamos a empleados",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "136525",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1380",
+    "nombre": "Deudores varios",
+    "nivel": "CUENTA",
+    "codigoPadre": "13",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "138090",
+    "nombre": "Otros deudores",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1380",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "13809001",
+    "nombre": "Deudores varios",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "138090",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "14",
+    "nombre": "Inventarios",
+    "nivel": "GRUPO",
+    "codigoPadre": "1",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1435",
+    "nombre": "Mercancías no fabricadas por la empresa",
+    "nivel": "CUENTA",
+    "codigoPadre": "14",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "143505",
+    "nombre": "Mercancías no fabricadas",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1435",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": "Inventarios",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "14350501",
+    "nombre": "Inventario de mercancías",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "143505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Inventarios",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1440",
+    "nombre": "Materias primas",
+    "nivel": "CUENTA",
+    "codigoPadre": "14",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "144005",
+    "nombre": "Materias primas",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1440",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": "Inventarios",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "14400501",
+    "nombre": "Materias primas",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "144005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": "Inventarios",
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "15",
+    "nombre": "Propiedades, planta y equipo",
+    "nivel": "GRUPO",
+    "codigoPadre": "1",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1524",
+    "nombre": "Equipo de oficina",
+    "nivel": "CUENTA",
+    "codigoPadre": "15",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "152405",
+    "nombre": "Muebles y enseres",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1524",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "15240501",
+    "nombre": "Muebles y enseres",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "152405",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1528",
+    "nombre": "Equipo de computación y comunicación",
+    "nivel": "CUENTA",
+    "codigoPadre": "15",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "152805",
+    "nombre": "Equipo de computación",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1528",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "15280501",
+    "nombre": "Equipo de cómputo",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "152805",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1592",
+    "nombre": "Depreciación acumulada",
+    "nivel": "CUENTA",
+    "codigoPadre": "15",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "159205",
+    "nombre": "Depreciación acum. equipo de oficina",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1592",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "15920501",
+    "nombre": "Depreciación acum. equipo de oficina",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "159205",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "19",
+    "nombre": "Otros activos",
+    "nivel": "GRUPO",
+    "codigoPadre": "1",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "1905",
+    "nombre": "Gastos pagados por anticipado",
+    "nivel": "CUENTA",
+    "codigoPadre": "19",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "190505",
+    "nombre": "Seguros",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "1905",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "19050501",
+    "nombre": "Seguros pagados por anticipado",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "190505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2",
+    "nombre": "Pasivo",
+    "nivel": "CLASE",
+    "codigoPadre": null,
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "21",
+    "nombre": "Obligaciones financieras",
+    "nivel": "GRUPO",
+    "codigoPadre": "2",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2105",
+    "nombre": "Bancos nacionales",
+    "nivel": "CUENTA",
+    "codigoPadre": "21",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "210505",
+    "nombre": "Sobregiros bancarios",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2105",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "21050501",
+    "nombre": "Sobregiros bancarios",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "210505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "210510",
+    "nombre": "Pagarés",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2105",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "21051001",
+    "nombre": "Obligaciones bancarias",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "210510",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "22",
+    "nombre": "Proveedores",
+    "nivel": "GRUPO",
+    "codigoPadre": "2",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2205",
+    "nombre": "Nacionales",
+    "nivel": "CUENTA",
+    "codigoPadre": "22",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "220505",
+    "nombre": "Proveedores nacionales",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2205",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": "Proveedores",
+    "detalleSaldos": "DETALLE_VENCIMIENTOS"
+  },
+  {
+    "codigo": "22050501",
+    "nombre": "Proveedores nacionales",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "220505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": "Proveedores",
+    "detalleSaldos": "DETALLE_VENCIMIENTOS"
+  },
+  {
+    "codigo": "23",
+    "nombre": "Cuentas por pagar",
+    "nivel": "GRUPO",
+    "codigoPadre": "2",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2335",
+    "nombre": "Costos y gastos por pagar",
+    "nivel": "CUENTA",
+    "codigoPadre": "23",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "233505",
+    "nombre": "Honorarios",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2335",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "23350501",
+    "nombre": "Honorarios por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "233505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2365",
+    "nombre": "Retención en la fuente",
+    "nivel": "CUENTA",
+    "codigoPadre": "23",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "236505",
+    "nombre": "Salarios y pagos laborales",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2365",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "23650501",
+    "nombre": "Retefuente salarios",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "236505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "236515",
+    "nombre": "Honorarios",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2365",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "23651501",
+    "nombre": "Retefuente honorarios",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "236515",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "236540",
+    "nombre": "Compras",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2365",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "23654001",
+    "nombre": "Retefuente compras",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "236540",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2367",
+    "nombre": "Impuesto a las ventas retenido",
+    "nivel": "CUENTA",
+    "codigoPadre": "23",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "236701",
+    "nombre": "Retención de IVA",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2367",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "23670101",
+    "nombre": "ReteIVA por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "236701",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2368",
+    "nombre": "Impuesto de industria y comercio retenido",
+    "nivel": "CUENTA",
+    "codigoPadre": "23",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "236801",
+    "nombre": "Retención de ICA",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2368",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "23680101",
+    "nombre": "ReteICA por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "236801",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "24",
+    "nombre": "Impuestos, gravámenes y tasas",
+    "nivel": "GRUPO",
+    "codigoPadre": "2",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2404",
+    "nombre": "De renta y complementarios",
+    "nivel": "CUENTA",
+    "codigoPadre": "24",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "240405",
+    "nombre": "Impuesto de renta por pagar",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2404",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "24040501",
+    "nombre": "Impuesto de renta por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "240405",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2408",
+    "nombre": "Impuesto sobre las ventas por pagar",
+    "nivel": "CUENTA",
+    "codigoPadre": "24",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "240801",
+    "nombre": "IVA generado",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2408",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "24080101",
+    "nombre": "IVA por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "240801",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2412",
+    "nombre": "De industria y comercio",
+    "nivel": "CUENTA",
+    "codigoPadre": "24",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "241201",
+    "nombre": "ICA por pagar",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2412",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "24120101",
+    "nombre": "ICA por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "241201",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "25",
+    "nombre": "Obligaciones laborales",
+    "nivel": "GRUPO",
+    "codigoPadre": "2",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2505",
+    "nombre": "Salarios por pagar",
+    "nivel": "CUENTA",
+    "codigoPadre": "25",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "250505",
+    "nombre": "Salarios por pagar",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "25050501",
+    "nombre": "Salarios por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "250505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2510",
+    "nombre": "Cesantías consolidadas",
+    "nivel": "CUENTA",
+    "codigoPadre": "25",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "251005",
+    "nombre": "Cesantías",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2510",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "25100501",
+    "nombre": "Cesantías por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "251005",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2515",
+    "nombre": "Intereses sobre cesantías",
+    "nivel": "CUENTA",
+    "codigoPadre": "25",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "251505",
+    "nombre": "Intereses sobre cesantías",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2515",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "25150501",
+    "nombre": "Intereses cesantías por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "251505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2520",
+    "nombre": "Prima de servicios",
+    "nivel": "CUENTA",
+    "codigoPadre": "25",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "252005",
+    "nombre": "Prima de servicios",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2520",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "25200501",
+    "nombre": "Prima por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "252005",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2525",
+    "nombre": "Vacaciones consolidadas",
+    "nivel": "CUENTA",
+    "codigoPadre": "25",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "252505",
+    "nombre": "Vacaciones",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2525",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "25250501",
+    "nombre": "Vacaciones por pagar",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "252505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "26",
+    "nombre": "Otros pasivos",
+    "nivel": "GRUPO",
+    "codigoPadre": "2",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "2610",
+    "nombre": "Ingresos recibidos por anticipado",
+    "nivel": "CUENTA",
+    "codigoPadre": "26",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "261005",
+    "nombre": "Ventas anticipadas",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "2610",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "26100501",
+    "nombre": "Anticipos de clientes",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "261005",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "3",
+    "nombre": "Patrimonio",
+    "nivel": "CLASE",
+    "codigoPadre": null,
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "31",
+    "nombre": "Capital social",
+    "nivel": "GRUPO",
+    "codigoPadre": "3",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "3115",
+    "nombre": "Aportes sociales",
+    "nivel": "CUENTA",
+    "codigoPadre": "31",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "311505",
+    "nombre": "Cuotas o partes de interés social",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "3115",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "31150501",
+    "nombre": "Capital social",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "311505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "33",
+    "nombre": "Reservas",
+    "nivel": "GRUPO",
+    "codigoPadre": "3",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "3305",
+    "nombre": "Reserva legal",
+    "nivel": "CUENTA",
+    "codigoPadre": "33",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "330505",
+    "nombre": "Reserva legal",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "3305",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "33050501",
+    "nombre": "Reserva legal",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "330505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "36",
+    "nombre": "Resultados del ejercicio",
+    "nivel": "GRUPO",
+    "codigoPadre": "3",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "3605",
+    "nombre": "Utilidad del ejercicio",
+    "nivel": "CUENTA",
+    "codigoPadre": "36",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "360505",
+    "nombre": "Utilidad del ejercicio",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "3605",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "36050501",
+    "nombre": "Utilidad del ejercicio",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "360505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "3610",
+    "nombre": "Pérdida del ejercicio",
+    "nivel": "CUENTA",
+    "codigoPadre": "36",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "361005",
+    "nombre": "Pérdida del ejercicio",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "3610",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "36100501",
+    "nombre": "Pérdida del ejercicio",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "361005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "37",
+    "nombre": "Resultados de ejercicios anteriores",
+    "nivel": "GRUPO",
+    "codigoPadre": "3",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "3705",
+    "nombre": "Utilidades acumuladas",
+    "nivel": "CUENTA",
+    "codigoPadre": "37",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "370505",
+    "nombre": "Utilidades acumuladas",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "3705",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "37050501",
+    "nombre": "Utilidades acumuladas",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "370505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "4",
+    "nombre": "Ingresos",
+    "nivel": "CLASE",
+    "codigoPadre": null,
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "41",
+    "nombre": "Operacionales",
+    "nivel": "GRUPO",
+    "codigoPadre": "4",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "4135",
+    "nombre": "Comercio al por mayor y al por menor",
+    "nivel": "CUENTA",
+    "codigoPadre": "41",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "413505",
+    "nombre": "Venta de mercancías",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "4135",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "41350501",
+    "nombre": "Venta de mercancías",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "413505",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "4140",
+    "nombre": "Servicios",
+    "nivel": "CUENTA",
+    "codigoPadre": "41",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "414005",
+    "nombre": "Servicios",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "4140",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "41400501",
+    "nombre": "Ingresos por servicios",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "414005",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "42",
+    "nombre": "No operacionales",
+    "nivel": "GRUPO",
+    "codigoPadre": "4",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "4210",
+    "nombre": "Financieros",
+    "nivel": "CUENTA",
+    "codigoPadre": "42",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "421005",
+    "nombre": "Intereses",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "4210",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "42100501",
+    "nombre": "Intereses ganados",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "421005",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "4218",
+    "nombre": "Diversos",
+    "nivel": "CUENTA",
+    "codigoPadre": "42",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "421805",
+    "nombre": "Diversos",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "4218",
+    "naturaleza": "CREDITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "42180501",
+    "nombre": "Otros ingresos",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "421805",
+    "naturaleza": "CREDITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5",
+    "nombre": "Gastos",
+    "nivel": "CLASE",
+    "codigoPadre": null,
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51",
+    "nombre": "Operacionales de administración",
+    "nivel": "GRUPO",
+    "codigoPadre": "5",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5105",
+    "nombre": "Gastos de personal",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "510506",
+    "nombre": "Sueldos",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5105",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51050601",
+    "nombre": "Sueldos administración",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "510506",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5110",
+    "nombre": "Honorarios",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "511005",
+    "nombre": "Honorarios",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5110",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51100501",
+    "nombre": "Honorarios",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "511005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5115",
+    "nombre": "Impuestos",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "511505",
+    "nombre": "Industria y comercio",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5115",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51150501",
+    "nombre": "Impuesto de industria y comercio",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "511505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5120",
+    "nombre": "Arrendamientos",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "512005",
+    "nombre": "Construcciones y edificaciones",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5120",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51200501",
+    "nombre": "Arrendamiento oficina",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "512005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5135",
+    "nombre": "Servicios",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "513525",
+    "nombre": "Acueducto y alcantarillado",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5135",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51352501",
+    "nombre": "Servicios públicos - acueducto",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "513525",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "513530",
+    "nombre": "Energía eléctrica",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5135",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51353001",
+    "nombre": "Energía eléctrica",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "513530",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "513535",
+    "nombre": "Teléfono",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5135",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51353501",
+    "nombre": "Teléfono e internet",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "513535",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5140",
+    "nombre": "Gastos legales",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "514005",
+    "nombre": "Notariales",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5140",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51400501",
+    "nombre": "Gastos notariales",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "514005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5145",
+    "nombre": "Mantenimiento y reparaciones",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "514505",
+    "nombre": "Equipo de oficina",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5145",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51450501",
+    "nombre": "Mantenimiento equipo de oficina",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "514505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5150",
+    "nombre": "Adecuación e instalación",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "515005",
+    "nombre": "Instalaciones eléctricas",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5150",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51500501",
+    "nombre": "Adecuaciones e instalaciones",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "515005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5195",
+    "nombre": "Diversos",
+    "nivel": "CUENTA",
+    "codigoPadre": "51",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "519530",
+    "nombre": "Elementos de aseo y cafetería",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5195",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51953001",
+    "nombre": "Elementos de aseo y cafetería",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "519530",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "519595",
+    "nombre": "Otros",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5195",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "51959501",
+    "nombre": "Gastos diversos de administración",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "519595",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "52",
+    "nombre": "Operacionales de ventas",
+    "nivel": "GRUPO",
+    "codigoPadre": "5",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5205",
+    "nombre": "Gastos de personal",
+    "nivel": "CUENTA",
+    "codigoPadre": "52",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "520506",
+    "nombre": "Sueldos",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5205",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "52050601",
+    "nombre": "Sueldos ventas",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "520506",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5220",
+    "nombre": "Arrendamientos",
+    "nivel": "CUENTA",
+    "codigoPadre": "52",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "522005",
+    "nombre": "Local comercial",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5220",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "52200501",
+    "nombre": "Arrendamiento local comercial",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "522005",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5235",
+    "nombre": "Servicios",
+    "nivel": "CUENTA",
+    "codigoPadre": "52",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "523530",
+    "nombre": "Energía eléctrica",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5235",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "52353001",
+    "nombre": "Energía eléctrica local",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "523530",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5295",
+    "nombre": "Diversos",
+    "nivel": "CUENTA",
+    "codigoPadre": "52",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "529595",
+    "nombre": "Otros",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5295",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "52959501",
+    "nombre": "Gastos de ventas diversos",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "529595",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "53",
+    "nombre": "No operacionales",
+    "nivel": "GRUPO",
+    "codigoPadre": "5",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "5305",
+    "nombre": "Financieros",
+    "nivel": "CUENTA",
+    "codigoPadre": "53",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "530515",
+    "nombre": "Comisiones",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5305",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "53051501",
+    "nombre": "Comisiones bancarias",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "530515",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "530520",
+    "nombre": "Intereses",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "5305",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "53052001",
+    "nombre": "Intereses pagados",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "530520",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "6",
+    "nombre": "Costos de ventas",
+    "nivel": "CLASE",
+    "codigoPadre": null,
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "61",
+    "nombre": "Costo de ventas y de prestación de servicios",
+    "nivel": "GRUPO",
+    "codigoPadre": "6",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "6135",
+    "nombre": "Comercio al por mayor y al por menor",
+    "nivel": "CUENTA",
+    "codigoPadre": "61",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "613505",
+    "nombre": "Costo de mercancías vendidas",
+    "nivel": "SUBCUENTA",
+    "codigoPadre": "6135",
+    "naturaleza": "DEBITO",
+    "esTransaccional": false,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  },
+  {
+    "codigo": "61350501",
+    "nombre": "Costo de ventas",
+    "nivel": "AUXILIAR",
+    "codigoPadre": "613505",
+    "naturaleza": "DEBITO",
+    "esTransaccional": true,
+    "categoria": null,
+    "detalleSaldos": "SIN_DETALLE"
+  }
+]

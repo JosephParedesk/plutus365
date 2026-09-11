@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-05T00:00:00.000Z",
+  "title": "Design System: Plutus365",
+  "extensions": {
+    "colorMeta": {
+      "forest": {
+        "role": "primary",
+        "displayName": "Verde Bosque",
+        "canonical": "#0B9A4E",
+        "tonalRamp": ["#062E17", "#0A4D26", "#0D6B35", "#0E7F46", "#0B9A4E", "#3DB671", "#7FCE9E", "#EAFBF1"]
+      },
+      "violet-data": {
+        "role": "secondary",
+        "displayName": "Violeta Dato",
+        "canonical": "#7F53DE",
+        "tonalRamp": ["#251740", "#3D2569", "#553493", "#6943BC", "#7F53DE", "#A283E8", "#C5B4F1", "#F5F2FE"]
+      },
+      "amber-alert": {
+        "role": "tertiary",
+        "displayName": "Ámbar Alerta",
+        "canonical": "#F2B525",
+        "tonalRamp": ["#4D3706", "#7A570A", "#A6770D", "#D39710", "#F2B525", "#F6C956", "#FADD8E", "#FFF8E8"]
+      },
+      "coral-risk": {
+        "role": "tertiary",
+        "displayName": "Coral Riesgo",
+        "canonical": "#F3586C",
+        "tonalRamp": ["#4D1219", "#7A1C28", "#A72638", "#D33249", "#F3586C", "#F6828F", "#FAAEB4", "#FEF0F2"]
+      },
+      "sidebar-bg": {
+        "role": "neutral",
+        "displayName": "Riel Verde Oscuro",
+        "canonical": "#17312E",
+        "tonalRamp": ["#050A09", "#0A1614", "#0F231F", "#132A26", "#17312E", "#2C5A54", "#5F8B84", "#C7DAD7"]
+      },
+      "heading": {
+        "role": "neutral",
+        "displayName": "Encabezado",
+        "canonical": "#122A26",
+        "tonalRamp": ["#040C0B", "#0A1B18", "#0E241F", "#0F2925", "#122A26", "#3A534E", "#6E827E", "#C6D2D0"]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Borde",
+        "canonical": "#E3ECE8",
+        "tonalRamp": ["#8AA79E", "#9FBAB2", "#B4C9C2", "#CAD8D3", "#E3ECE8", "#EDF3F0", "#F5F9F7", "#FBFDFC"]
+      },
+      "page-bg": {
+        "role": "neutral",
+        "displayName": "Fondo de Página",
+        "canonical": "#F5F8F6",
+        "tonalRamp": ["#8FA79D", "#A6BAB2", "#BDCCC6", "#D4E0DB", "#F5F8F6", "#F8FAF9", "#FBFCFB", "#FFFFFF"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Valores de KPI y saludo de bienvenida del dashboard." },
+      "title": { "displayName": "Title", "purpose": "Encabezados de Card, headers de tabla, nombres de sección." },
+      "body": { "displayName": "Body", "purpose": "Texto de formularios, celdas de tabla, contenido general." },
+      "label": { "displayName": "Label", "purpose": "Etiquetas de KPI, metadatos, texto de apoyo." }
+    },
+    "shadows": [
+      { "name": "ambient", "value": "0 2px 8px rgba(18, 42, 38, 0.06)", "purpose": "Sombra por defecto de cualquier superficie elevada en reposo." },
+      { "name": "elevated", "value": "0 8px 28px rgba(18, 42, 38, 0.12)", "purpose": "Dropdowns, popups de notificación, overlays flotantes." },
+      { "name": "card-rest", "value": "0 1px 3px rgba(18, 42, 38, 0.05)", "purpose": "Sombra terciaria de Card — casi un borde suave." },
+      { "name": "cta-glow", "value": "0 4px 14px rgba(11, 154, 78, 0.25)", "purpose": "Única sombra teñida de marca, reservada al banner de acción destacada." }
+    ],
+    "motion": [
+      { "name": "page-enter", "value": "fadeInUp 0.28s ease both", "purpose": "Transición de entrada al cambiar de ruta en DashboardLayout." },
+      { "name": "fade-in", "value": "fadeIn 0.25s ease both", "purpose": "Aparición escalonada de tarjetas (KPIs) con animationDelay por índice." },
+      { "name": "hover-lift", "value": "transform 0.2s ease (translateY(-2px))", "purpose": "Elevación de Card hoverable al pasar el mouse." },
+      { "name": "press", "value": "transform 0.15s ease (translateY(1px))", "purpose": "Respuesta táctil de Button al hacer click." }
+    ],
+    "breakpoints": [
+      { "name": "auth-stack", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Botón de acción principal — el único con permiso de fondo Verde Bosque.",
+      "html": "<button class=\"ds-btn-primary\">Nueva venta</button>",
+      "css": ".ds-btn-primary { background: #0B9A4E; color: #FFFFFF; height: 36px; padding: 0 16px; border-radius: 8px; border: none; font-weight: 600; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; cursor: pointer; transition: background-color 0.15s ease, transform 0.15s ease; } .ds-btn-primary:hover { background: #0E7F46; } .ds-btn-primary:focus-visible { outline: 2px solid #0B9A4E; outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Acción secundaria — nunca compite en peso con el botón primario.",
+      "html": "<button class=\"ds-btn-ghost\">Personalizar</button>",
+      "css": ".ds-btn-ghost { background: #FFFFFF; color: #122A26; height: 36px; padding: 0 16px; border-radius: 8px; border: 1px solid #E3ECE8; font-weight: 600; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; cursor: pointer; transition: border-color 0.15s ease, transform 0.15s ease; } .ds-btn-ghost:hover { border-color: #0B9A4E; color: #0B9A4E; } .ds-btn-ghost:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "KPI Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Tarjeta de indicador — título muted, valor grande en Encabezado, ícono con fondo de tinte semántico.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-row\"><div><p class=\"ds-card-label\">Ventas hoy</p><p class=\"ds-card-value\">$1.240.000</p><span class=\"ds-card-sub\">18 transacciones</span></div><div class=\"ds-card-icon\">$</div></div></div>",
+      "css": ".ds-card { background: #FFFFFF; border: 1px solid #E3ECE8; border-radius: 14px; padding: 18px; box-shadow: 0 1px 3px rgba(18, 42, 38, 0.05); transition: box-shadow 0.2s ease, transform 0.2s ease; } .ds-card:hover { transform: translateY(-2px); box-shadow: 0 2px 8px rgba(18, 42, 38, 0.06); } .ds-card-row { display: flex; justify-content: space-between; align-items: flex-start; } .ds-card-label { color: #6B7A76; margin: 0; font-size: 12.5px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; } .ds-card-value { font-size: 22px; font-weight: 800; color: #122A26; margin: 4px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; } .ds-card-sub { font-size: 12px; color: #9AA8A4; } .ds-card-icon { background: #EAFBF1; color: #0B9A4E; border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }"
+    },
+    {
+      "name": "Status Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Chip de estado/categoría — el color siempre comunica significado, nunca decoración.",
+      "html": "<span class=\"ds-tag ds-tag--warning\">Stock bajo</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; } .ds-tag--warning { background: #FFF8E8; color: #F2B525; } .ds-tag--danger { background: #FEF0F2; color: #F3586C; } .ds-tag--info { background: #F5F2FE; color: #7F53DE; } .ds-tag--success { background: #EAFBF1; color: #0B9A4E; }"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "sidebar-nav-item-selected",
+      "description": "Ítem del riel lateral, solo ícono. Estado seleccionado usa Menta Riel con texto oscuro — el único lugar del sistema donde el texto oscuro va sobre fondo de color.",
+      "html": "<div class=\"ds-nav-rail\"><div class=\"ds-nav-item ds-nav-item--selected\">🏠</div><div class=\"ds-nav-item\">🛒</div><div class=\"ds-nav-item\">📦</div></div>",
+      "css": ".ds-nav-rail { background: #17312E; width: 72px; display: flex; flex-direction: column; gap: 4px; padding: 12px; } .ds-nav-item { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.78); cursor: pointer; transition: background-color 0.15s ease; } .ds-nav-item:hover { background: rgba(255,255,255,0.08); } .ds-nav-item--selected, .ds-nav-item--selected:hover { background: #A9E3C3; color: #0F3D2E; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de formulario estándar — radio 8px, altura 36px (48px en auth).",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Buscar un módulo...\" />",
+      "css": ".ds-input { height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid #E3ECE8; background: #FFFFFF; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif; color: #122A26; transition: border-color 0.15s ease; } .ds-input::placeholder { color: #9AA8A4; } .ds-input:focus-visible { outline: none; border-color: #0B9A4E; box-shadow: 0 0 0 3px rgba(11, 154, 78, 0.12); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El Libro Mayor Digital",
+    "overview": "Plutus365 es un libro mayor que dejó de vivir en cuadernos sueltos. El copy del propio login lo dice: la promesa es no tener que \"perseguir la información entre cinco cuadernos distintos\". El sistema visual responde a eso con calma, no con espectáculo — es la herramienta que un cajero, un contador o el dueño de la PYME abren durante horas todos los días, así que su primer trabajo es no cansar. Verde bosque como color de marca y de confianza financiera, un riel lateral oscuro que actúa como columna vertebral fija de la app, tarjetas blancas con esquinas generosas y sombras casi imperceptibles teñidas del mismo verde oscuro del texto (nunca negro puro). No hay tipografía de despliegue: el sistema confía en la fuente nativa del sistema operativo y deja que el color y el peso tipográfico carguen la jerarquía.\n\nEs un sistema de operación, no de persuasión: la densidad de información por pantalla es alta (KPIs, tablas, gráficas, listas de vencimientos) pero cada bloque respira con el mismo ritmo de espaciado y el mismo lenguaje de esquinas redondeadas, así que la densidad se siente organizada, no apretada.",
+    "keyCharacteristics": [
+      "Riel lateral fijo, solo íconos, verde bosque oscuro con selección menta.",
+      "Tarjetas blancas de esquinas generosas (14px) sobre fondo gris-verde claro.",
+      "Sombras tenues teñidas de verde oscuro, nunca negras — casi no se notan en reposo.",
+      "Un único acento de marca (verde) reservado para acción primaria y estado positivo; violeta/ámbar/coral son vocabulario secundario para categorizar KPIs y estados, no para decorar.",
+      "Sin tipografía de despliegue ni fuente cargada: la fuente del sistema operativo, con peso y tamaño haciendo el trabajo de jerarquía.",
+      "Micro-movimiento discreto en cada superficie interactiva (tarjetas, botones, filas) que respeta prefers-reduced-motion."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "El verde bosque es el único color que significa \"actúa aquí\". Violeta, ámbar y coral nunca se usan para call-to-action — son vocabulario de categorización y estado, no de acción.", "section": "colors" },
+      { "name": "The Tinted Shadow Rule", "body": "Ninguna sombra usa negro puro. Toda sombra es rgba(18, 42, 38, α) — el mismo verde-carbón del color Encabezado.", "section": "colors" },
+      { "name": "The No-Display-Font Rule", "body": "No se introduce una fuente de despliegue ni un webfont. La jerarquía se logra con tamaño/peso/color sobre la misma pila tipográfica del sistema.", "section": "typography" },
+      { "name": "The Hover-Lifts Rule", "body": "Las tarjetas interactivas suben translateY(-2px) al pasar el mouse; los botones bajan translateY(1px) al hacer click. La elevación siempre responde al gesto del usuario.", "section": "elevation" },
+      { "name": "The Growing Radius Rule", "body": "El radio de esquina escala con la superficie: Modal 16px > Card 14px > Table/Dropdown 12px > Button/Input 8px > Tag 6px. Nunca al revés.", "section": "typography" }
+    ],
+    "dos": [
+      "Do usar colors.ts como única fuente de verdad para cualquier color nuevo.",
+      "Do reservar el Verde Bosque para acción primaria y estado positivo.",
+      "Do teñir cualquier sombra nueva de verde-carbón, nunca negro puro.",
+      "Do escalar el radio de esquina con el tamaño del componente.",
+      "Do mostrar los módulos sin acceso atenuados con candado en vez de ocultarlos.",
+      "Do respetar prefers-reduced-motion en cualquier animación nueva."
+    ],
+    "donts": [
+      "Don't hardcodear un hex nuevo fuera de colors.ts.",
+      "Don't introducir violeta, ámbar o coral como color de botón de acción primaria.",
+      "Don't introducir una fuente de despliegue o un webfont nuevo.",
+      "Don't usar esquinas a escuadra (radio 0) en ningún componente de contenido."
+    ]
+  }
+}

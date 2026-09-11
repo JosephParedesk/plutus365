@@ -1,0 +1,30 @@
+# Build de Gradle / cachés / IDE (por servicio, cualquier profundidad)
+**/build/
+**/.gradle/
+**/.idea/
+**/out/
+
+# Node / Vite (el frontend ya tiene su propio .gitignore, esto es por si acaso)
+**/node_modules/
+**/dist/
+**/dist-ssr/
+
+# Secretos reales por servicio (DB, mail, JWT, cifrado de certificados) —
+# ver pos-backend/*/  .env y MIGRACION-MONOLITO-MODULAR.md
+**/.env
+**/.env.*
+!**/.env.example
+
+# Zips sueltos de respaldo dentro de pos-backend (no son parte del código)
+pos-backend/*.zip
+
+# Documentos con credenciales reales, no van al historial de git
+Factus\ credenciales.pdf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Estado local de Claude Code (específico de esta máquina, no del proyecto)
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

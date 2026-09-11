@@ -1,0 +1,136 @@
+# Migración a monolito modular — plan y reglas
+
+> Estado: PLAN, nada ejecutado todavía. Este documento se actualiza a medida que
+> avanza cada módulo (marcar checkboxes).
+
+## Por qué esto es viable con bajo riesgo
+
+Revisé el código real antes de armar este plan (no es un plan genérico):
+
+- **El frontend solo habla con el gateway** (`VITE_API_URL=http://localhost:8090`).
+  Si las rutas no cambian, la migración es invisible para el frontend. Cero
+  archivos de frontend se tocan en este plan.
+- **El gateway es un proxy declarativo** (Spring Cloud Gateway MVC, rutas por
+  `Path=/api/pos/x/**` → `http://localhost:PUERTO`). No hay lógica de negocio
+  ahí, solo `EmpresaIdInterceptor` y `PermisosInterceptor`.
+- **Cada servicio ya separa el puerto (dominio) de sus adaptadores.** Las llamadas
+  entre microservicios pasan por una interfaz de dominio (`StockGateway`,
+  `ContabilidadGateway`, etc.) implementada en `infraestructure/driver_adapters/http_client/`.
+  Ejemplo real (`venta-service/StockGatewayImpl`): usa `RestClient` para pegarle
+  a inventario-service, pero el `UseCase` de venta nunca sabe que eso es HTTP.
+- **Esto significa que migrar un módulo = escribir una implementación nueva de
+  la misma interfaz que llama directo al `UseCase` del otro módulo, en vez de por
+  HTTP.** Cero cambios en `domain/usecase` ni en `domain/model`. Es mecánico.
+- `empresaId` ya viaja como parámetro explícito en las firmas de los UseCase
+  (no depende de leer el header dentro del usecase), así que no hay que inventar
+  contexto compartido tipo ThreadLocal para reemplazar el `X-Empresa-Id`.
+
+## Grafo de dependencias real (relevado del código)
+
+Servicios "hoja" (nadie los llama por HTTP desde otro servicio, o no llaman a nadie):
+`categoria`, `proveedor`, `cliente-service`, `subscription-service`, `auth`,
+`contabilidad-service` (todos le pegan a este, él no le pega a nadie), `nomina`.
+
+Servicios intermedios:
+- `empresa-service` → depende de `contabilidad`
+- `inventario` → depende de `categoria`, `proveedor`, `contabilidad`
+- `compra` → depende de `contabilidad`, `inventario` (stock)
+- `venta-service` → depende de `contabilidad`, `empresa`, `inventario` (stock)
+
+Servicio más conectado (migrar de último):
+- `facturacion-service` → depende de `cliente`, `compra`, `empresa`, `nomina`,
+  `proveedor`, `venta`, `inventario` (stock), `contabilidad`
+
+## Orden de migración
+
+1. `categoria`, `proveedor`, `cliente-service`, `subscription-service`, `auth` (hoja, riesgo mínimo)
+2. `contabilidad-service` (todos dependen de él — conviene tenerlo adentro temprano)
+3. `nomina`
+4. `empresa-service`
+5. `inventario`
+6. `compra`
+7. `venta-service`
+8. `facturacion-service` (último, el más conectado)
+9. Apagar el proceso `gateway` cuando ya no quede ningún servicio standalone
+   detrás de él (sus interceptores pasan a ser filtros del monolito)
+
+## Arquitectura destino
+
+- Un solo repo Gradle multi-módulo. Cada servicio actual se copia tal cual a
+  `modules/<nombre>` **sin tocar una sola línea** de `domain/` ni `application/`.
+- Un módulo nuevo `app` con el único `@SpringBootApplication`, que importa los
+  `UseCaseConfig` de todos los módulos ya migrados.
+- El módulo `gateway` se reduce a: interceptores de empresa/permisos (que pasan
+  a vivir en `app` como filtros normales de Spring MVC) + las rutas que aún
+  apunten a servicios standalone no migrados.
+- Cada módulo migrado expone públicamente solo `domain.model` y
+  `domain.usecase`; nada de `infraestructure.driver_adapters.jpa_repository.*`
+  ni `.mapper.*` es visible desde otro módulo — eso sigue siendo interno,
+  igual que hoy.
+
+## Receta por módulo (repetir exactamente, en orden)
+
+1. Copiar el paquete completo del servicio a `modules/<x>` tal cual (copy-paste,
+   no "aprovechar para mejorar").
+2. Las entidades JPA apuntan al mismo esquema MySQL `ecommerce`, mismas tablas,
+   sin `ALTER TABLE`.
+3. Por cada `...GatewayImpl` en `infraestructure/driver_adapters/http_client/`
+   que le pegue a OTRO módulo ya migrado: crear una implementación nueva en
+   `infraestructure/driver_adapters/local_client/` que llame directo al bean del
+   `UseCase` del otro módulo. Borrar la implementación HTTP recién cuando la
+   nueva pase las mismas pruebas.
+4. Si el módulo destino todavía NO está migrado, ese `http_client` se deja como
+   está — el servicio standalone sigue corriendo en su puerto viejo en paralelo.
+5. Registrar los `@Bean` de `UseCaseConfig` del módulo en `app`.
+6. Actualizar la ruta del gateway (`Path=/api/pos/x/**`) para que apunte al
+   puerto del monolito en vez del puerto standalone.
+7. Dejar el microservicio standalone viejo intacto (no borrar el código) un
+   período de "quemado" (2 semanas sugerido) antes de eliminarlo.
+
+## Reglas estrictas (no negociables)
+
+1. **Ni una línea de `domain/usecase/**` ni `domain/model/**` cambia durante la
+   migración.** Si al mover un módulo el diff toca esos paquetes, se rechaza y
+   se rehace. Como el repo hoy no tiene git, el primer paso real es `git init`
+   + commit del estado actual como línea base, para poder diffear cada módulo.
+2. **Un módulo migrado por commit.** Nunca dos módulos en el mismo cambio —
+   si algo se rompe, tiene que poder aislarse a un commit específico.
+3. **Ningún cambio de comportamiento va en el mismo commit que una migración.**
+   Si aparece un bug real en el camino, se anota y se arregla en un commit
+   aparte, después de que la migración esté mergeada.
+4. **No subir el patrón de compensación a transacción real todavía.** El
+   patrón `ERROR_INVENTARIO` / `ERROR_CONTABILIZACION` (documentado en
+   `CLAUDE.md`) se mantiene igual aunque en el monolito ya sería posible
+   envolver todo en un `@Transactional`. Ese es un cambio de comportamiento
+   real y deliberado — se evalúa aparte, después, no mezclado con la mudanza
+   estructural.
+5. **Nada de abstracciones nuevas "por si acaso".** Si dos módulos necesitan
+   código idéntico, se duplica ahora. Se evalúa extraerlo a un módulo común
+   recién cuando lo necesite un tercero (regla de tres).
+6. **Los límites entre módulos se verifican con un test ArchUnit**, no a mano
+   ni de memoria: ningún módulo puede importar
+   `infraestructure.driver_adapters.jpa_repository.*` ni `.mapper.*` de otro
+   módulo; `domain` no puede depender de Spring; los `UseCase` se siguen
+   instanciando solo en `UseCaseConfig` (nunca `@Service`).
+7. **Antes de migrar un módulo sin tests, escribir primero tests de
+   caracterización** contra el microservicio standalone corriendo (capturar
+   pares request/response reales), y correr esos mismos casos contra la
+   versión in-process — la salida tiene que ser idéntica byte a byte.
+8. **Rollback = mover la ruta del gateway al puerto viejo.** Por eso ningún
+   servicio standalone se borra hasta cumplir el período de quemado.
+
+## Checklist de progreso
+
+- [ ] `git init` + commit línea base
+- [ ] Auditar qué servicios tienen tests en `src/test/java` (probablemente ninguno — confirmar)
+- [ ] Armar `app` module + estructura Gradle multi-módulo vacía
+- [ ] ArchUnit: reglas de límites entre módulos
+- [ ] Migrar: categoria, proveedor, cliente, subscription-service, auth
+- [ ] Migrar: contabilidad-service
+- [ ] Migrar: nomina
+- [ ] Migrar: empresa-service
+- [ ] Migrar: inventario
+- [ ] Migrar: compra
+- [ ] Migrar: venta-service
+- [ ] Migrar: facturacion-service
+- [ ] Apagar proceso gateway standalone

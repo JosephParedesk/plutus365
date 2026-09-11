@@ -1,0 +1,19 @@
+# Snippet original relacionado con DIAN directo (el resto de application.properties
+# — datasource, mail, otros servicios — sigue igual en el archivo real, no se repite acá).
+
+# Certificado digital: se guarda FUERA de cualquier carpeta pública/servida por HTTP.
+# Genera la llave de cifrado con: openssl rand -base64 32
+cert.storage.dir=${CERT_STORAGE_DIR:certificados-seguros}
+cert.encryption.key=${CERT_ENCRYPTION_KEY:}
+
+# Modo simulación local: si está en true, NO se envía nada por internet a la DIAN.
+# En vez de eso, arma y firma el XML igual que en real, pero responde como si la
+# DIAN la hubiera aceptado. Úsalo mientras no tengas certificado/credenciales reales.
+dian.simulacion.activa=${DIAN_SIMULACION:false}
+
+# Endpoints DIAN (verifica estas URLs contra la documentación vigente de la DIAN antes de producción)
+dian.habilitacion.url=https://vpfe-hab.dian.gov.co/WcfDianCustomerServices.svc
+dian.produccion.url=https://vpfe.dian.gov.co/WcfDianCustomerServices.svc
+
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB

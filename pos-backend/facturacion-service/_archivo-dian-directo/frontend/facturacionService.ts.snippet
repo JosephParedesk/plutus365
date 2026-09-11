@@ -1,0 +1,62 @@
+// Snippet original relacionado con DIAN directo — solo las partes de
+// facturacionService.ts que cambiaron con Factus (el resto del archivo,
+// como notaCreditoService, no cambió y no se repite acá).
+
+export type AmbienteDian = 'HABILITACION' | 'PRODUCCION'
+export type EstadoFactura = 'GENERADA' | 'ENVIADA' | 'ACEPTADA' | 'RECHAZADA' | 'ERROR'
+
+export interface ConfiguracionDian {
+    empresaId: string
+    resolucionNumero: string
+    resolucionFechaInicio: string   // yyyy-MM-dd
+    resolucionFechaFin: string      // yyyy-MM-dd
+    prefijo: string
+    rangoDesde: number
+    rangoHasta: number
+    consecutivoActual?: number
+    softwareId: string
+    softwarePin: string
+    claveTecnica: string
+    ambiente: AmbienteDian
+    testSetId?: string
+    certificadoNombreArchivo?: string
+    certificadoCargadoEn?: string
+    certificadoActivo?: boolean
+    numerosRestantes?: number
+    alertaRangoBajo?: boolean
+}
+
+export type ConfiguracionDianRequest = Omit<ConfiguracionDian, 'empresaId' | 'certificadoActivo' | 'certificadoNombreArchivo' | 'certificadoCargadoEn'>
+
+export interface Factura {
+    facturaId: number
+    empresaId: string
+    ventaId: number
+    numeroFactura: string
+    cufe: string
+    qrUrl: string
+    ambiente: AmbienteDian
+    estado: EstadoFactura
+    respuestaDian: string
+    fechaEmision: string
+    fechaEnvio: string
+}
+
+export const configuracionDianService = {
+    // 404 si la empresa aún no ha configurado su facturación electrónica
+    obtener: () =>
+        api.get<ConfiguracionDian>('/api/pos/facturacion/configuracion'),
+
+    guardar: (data: ConfiguracionDianRequest) =>
+        api.put<ConfiguracionDian>('/api/pos/facturacion/configuracion', data),
+
+    // Sube el certificado .p12/.pfx — se guarda como firmadigital_{empresaId}.p12 en el backend
+    subirCertificado: (archivo: File, password: string) => {
+        const formData = new FormData()
+        formData.append('archivo', archivo)
+        formData.append('password', password)
+        return api.post('/api/pos/facturacion/configuracion/certificado', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    },
+}
