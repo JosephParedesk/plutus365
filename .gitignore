@@ -18,6 +18,12 @@
 # Zips sueltos de respaldo dentro de pos-backend (no son parte del código)
 pos-backend/*.zip
 
+# Datos reales de empresas subidos en tiempo de ejecución (logos, fotos de
+# producto, certificados .p12 de firma electrónica) — no son código fuente,
+# no van al historial de git.
+**/uploads/
+**/certificados-seguros/
+
 # Documentos con credenciales reales, no van al historial de git
 Factus\ credenciales.pdf
 

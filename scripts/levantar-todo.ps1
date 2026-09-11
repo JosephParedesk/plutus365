@@ -8,7 +8,9 @@
 # ya no están hardcodeadas en application.properties — ver MIGRACION-MONOLITO-MODULAR.md).
 # inventario y subscription-service TAMBIÉN tienen un .env en su carpeta, pero
 # apunta a un puerto y una base de datos que no son los reales — cargarlo
-# rompería cosas, se deja fuera hasta que se audite ese .env aparte.
+# rompería cosas, se deja fuera hasta que se audite ese .env aparte. (2026-09-11:
+# los otros 7 que faltaban por sacar su password de application.properties ya
+# tienen su .env con DB_PASSWORD real y quedaron en $true.)
 # Tarea: nombre de la tarea de Gradle a correr (default 'bootRun'; el
 # monolito es multi-módulo así que hay que pedir el módulo :app explícito).
 # categoria-service (8083) sigue levantándose aunque el gateway ya no le
@@ -18,16 +20,16 @@ $servicios = @(
     @{ Nombre = "auth-service";          Carpeta = "auth";                  Puerto = 8080; UsaEnvFile = $true  }
     @{ Nombre = "subscription-service";  Carpeta = "subscription-service";  Puerto = 8081; UsaEnvFile = $false }
     @{ Nombre = "inventario-service";    Carpeta = "inventario";            Puerto = 8082; UsaEnvFile = $false }
-    @{ Nombre = "categoria-service";     Carpeta = "categoria";             Puerto = 8083; UsaEnvFile = $false }
-    @{ Nombre = "proveedor-service";     Carpeta = "proveedor";             Puerto = 8084; UsaEnvFile = $false }
-    @{ Nombre = "compra-service";        Carpeta = "compra";                Puerto = 8085; UsaEnvFile = $false }
-    @{ Nombre = "cliente-service";       Carpeta = "cliente-service";       Puerto = 8086; UsaEnvFile = $false }
+    @{ Nombre = "categoria-service";     Carpeta = "categoria";             Puerto = 8083; UsaEnvFile = $true  }
+    @{ Nombre = "proveedor-service";     Carpeta = "proveedor";             Puerto = 8084; UsaEnvFile = $true  }
+    @{ Nombre = "compra-service";        Carpeta = "compra";                Puerto = 8085; UsaEnvFile = $true  }
+    @{ Nombre = "cliente-service";       Carpeta = "cliente-service";       Puerto = 8086; UsaEnvFile = $true  }
     @{ Nombre = "venta-service";         Carpeta = "venta-service";         Puerto = 8087; UsaEnvFile = $true  }
-    @{ Nombre = "empresa-service";       Carpeta = "empresa-service";       Puerto = 8088; UsaEnvFile = $false }
+    @{ Nombre = "empresa-service";       Carpeta = "empresa-service";       Puerto = 8088; UsaEnvFile = $true  }
     @{ Nombre = "facturacion-service";   Carpeta = "facturacion-service";   Puerto = 8089; UsaEnvFile = $true  }
     @{ Nombre = "gateway";               Carpeta = "gateway";               Puerto = 8090; UsaEnvFile = $true  }
-    @{ Nombre = "contabilidad-service";  Carpeta = "contabilidad-service";  Puerto = 8091; UsaEnvFile = $false }
-    @{ Nombre = "nomina-service";        Carpeta = "nomina";                Puerto = 8092; UsaEnvFile = $false }
+    @{ Nombre = "contabilidad-service";  Carpeta = "contabilidad-service";  Puerto = 8091; UsaEnvFile = $true  }
+    @{ Nombre = "nomina-service";        Carpeta = "nomina";                Puerto = 8092; UsaEnvFile = $true  }
     @{ Nombre = "monolito-modular";      Carpeta = "monolito-modular";      Puerto = 9000; UsaEnvFile = $true; Tarea = ":app:bootRun" }
 )
 
