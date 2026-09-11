@@ -255,7 +255,17 @@ antes de seguir.
       funcionando igual. Todavía NO conectado al gateway (mismo criterio
       que categoria: cutover es un paso aparte).
 - [ ] Cutover del gateway para proveedor (`Path=/api/pos/proveedores/**` → puerto del monolito)
-- [ ] Migrar: cliente, subscription-service, auth
+- [x] **Migrar: cliente-service** (2026-09-11) — mismo patrón, `domain/`,
+      `application/` e `infraestructure/` copiados byte a byte (`diff -r`).
+      Sin http_client (hoja). Solo aplicó el ajuste ya conocido de
+      `@Configuration("clienteUseCaseConfig")` — nada nuevo esta vez, el
+      `GlobalExceptionHandler` se omitió directo sin redescubrir el problema.
+      Probado en vivo: guardar cliente natural (default `pais=Colombia`
+      aplicado), guardar persona jurídica con NIT sin DV (400 con el mensaje
+      de validación correcto), buscar por documento, eliminar y confirmar
+      que ya no aparece en el listado. Todavía NO conectado al gateway.
+- [ ] Cutover del gateway para cliente (`Path=/api/pos/clientes/**` → puerto del monolito)
+- [ ] Migrar: subscription-service, auth
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
 - [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)
