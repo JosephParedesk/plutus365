@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
-@Component
+// Nombre de bean explícito: auth tiene una clase con el mismo simple name en
+// su propio paquete de notification — ver el mismo comentario en
+// categoria/application/config/UseCaseConfig.java.
+@Component("subscriptionNotificationGatewayImpl")
 @RequiredArgsConstructor
 public class NotificationGatewayImpl implements NotificationGateway {
 

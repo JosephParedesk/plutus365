@@ -76,11 +76,18 @@ monolito todos comparten un solo contexto — esto ya rompió dos veces al migra
 proveedor junto a categoria. Antes de dar por terminada la migración de
 CUALQUIER módulo nuevo, revisar:
 
-1. **`GlobalExceptionHandler`**: nunca copiarlo. Ya existe uno compartido en
-   `app/infraestructure/exception/GlobalExceptionHandler.java` — si el
-   handler del microservicio original difiere del compartido (raro, pero
-   verificar con `diff`), hay que decidir cómo reconciliar antes de tirar la
-   copia del módulo.
+1. **`GlobalExceptionHandler`**: por default no se copia, ya existe uno
+   compartido en `app/infraestructure/exception/GlobalExceptionHandler.java`.
+   **Pero verificar SIEMPRE con `diff` contra el compartido antes de asumirlo**
+   — pasó con `auth` (maneja excepciones de JWT, formato de respuesta
+   `{"error":msg}` distinto al compartido `{"timestamp","status","error","message"}`).
+   Si difiere: no fusionar (sería cambio de comportamiento), sino
+   **renombrar la clase** (ej. `AuthGlobalExceptionHandler` — `@RestControllerAdvice`
+   NO tiene atributo propio para fijar nombre de bean, su `value()` es alias
+   de `basePackages()`, así que solo nombrar la anotación no alcanza) y
+   scopearla con `@RestControllerAdvice(basePackages = "com.pos_backend.<modulo>.infraestructure.entry_points")`
+   + `@Order(Ordered.HIGHEST_PRECEDENCE)` para que gane sobre el compartido
+   en los tipos de excepción que ambos manejan, sin volverse ambiguo.
 2. **`UseCaseConfig`**: si el microservicio origen tiene una clase con ese
    nombre (todos la tienen), agregar `@Configuration("<modulo>UseCaseConfig")`
    explícito al copiarla — si no, choca por bean id duplicado con la de
@@ -95,6 +102,13 @@ CUALQUIER módulo nuevo, revisar:
    `restTemplate()`; revisar antes de migrar cualquier módulo que use
    `RestTemplate`/`RestClient` en su `http_client` (compra, venta,
    facturacion, empresa) si repite el mismo nombre de método.
+5. **Cualquier clase `@Component`/`@Repository`/`@Service` con simple name
+   repetido entre módulos** (no solo `Mapper`/`Config`) — ej. dos
+   `NotificationGatewayImpl` en paquetes `.notification` distintos
+   (`auth` y `subscription-service`) chocaron igual que `UseCaseConfig`. A
+   diferencia de `GlobalExceptionHandler`, acá SÍ alcanza con nombrar la
+   anotación (`@Component("<modulo>NombreDeLaClase")`) sin renombrar el
+   archivo — `@Component.value()` es directamente el id del bean.
 
 ## Receta por módulo (repetir exactamente, en orden)
 
@@ -153,9 +167,9 @@ Conteo de archivos en `src/test/java` por servicio:
 
 | Servicio | Tests | Nota |
 |---|---|---|
-| inventario | 13 | cobertura real |
-| auth | 9 | cobertura real |
-| facturacion-service | 5 | cobertura real |
+| inventario | 13 | cobertura real (no verificado si compila — auditar antes de migrarlo, ver el caso de auth abajo) |
+| auth | 9 | **corregido al migrar (2026-09-11): 6 de 9 no compilan** contra el `Usuario`/`UseCaseConfig`/`NotificationGatewayImpl` actuales — quedaron desactualizados, no es un problema de la migración. Cobertura real = 3 (`UsuarioDataGatewayImplTest`, `EncrypterGatewayImplTest`, `GlobalExceptionHandlerTest`) |
+| facturacion-service | 5 | cobertura real (no verificado si compila — auditar antes de migrarlo) |
 | subscription-service, categoria, proveedor, compra, gateway | 1 c/u | **solo el smoke test `contextLoads()` generado por Spring, cero cobertura real** (confirmado en los 5) |
 | nomina | 1 | test real pero acotado (`ConceptoHoraExtra`), no smoke test — igual insuficiente como red de seguridad |
 | cliente-service, venta-service, empresa-service, contabilidad-service | 0 | **sin ningún test** |
@@ -305,7 +319,50 @@ antes de seguir.
       usuario: deduplicar `plan_features` a mano (dejar una fila por
       `(plan_id, modulo)`) y evaluar agregar el UNIQUE constraint — eso sí
       es un cambio de comportamiento deliberado, no se hace de paso.
-- [ ] Migrar: subscription-service, auth
+- [x] **Migrar: auth** (2026-09-11) — mismo patrón, `domain/`, `application/`
+      e `infraestructure/` copiados byte a byte (`diff -r`; sin http_client,
+      hoja). `@Configuration("authUseCaseConfig")` de nuevo.
+      Este módulo trajo el caso "raro" que el plan ya anticipaba (ver
+      checklist de colisiones): el `GlobalExceptionHandler` de auth **no**
+      es igual al compartido — devuelve `{"error": msg}` en vez de
+      `{"timestamp","status","error","message"}`, y maneja excepciones
+      específicas de JWT (`ExpiredJwtException`, `MalformedJwtException`,
+      `SignatureException`) que el compartido ni conoce. Fusionarlo hubiera
+      sido un cambio de comportamiento real (el frontend puede depender del
+      shape `{"error":...}` para los mensajes de login). Se mantuvo aparte:
+      - Renombrado a `AuthGlobalExceptionHandler` (única diferencia real de
+        contenido con el original — mismos métodos, mismas respuestas).
+        Fue necesario porque `@RestControllerAdvice` no tiene atributo propio
+        para fijar el nombre de bean (su `value()` es alias de
+        `basePackages()`, no del id de bean como en `@Component`) — a
+        diferencia de `UseCaseConfig`, acá no alcanzaba con nombrar la
+        anotación, había que renombrar la clase.
+      - `@RestControllerAdvice(basePackages = "com.pos_backend.auth.infraestructure.entry_points")`
+        + `@Order(Ordered.HIGHEST_PRECEDENCE)`: solo aplica a los
+        controllers de auth, y gana la ambigüedad en `RuntimeException`/
+        `NoSuchElementException` (los únicos dos tipos que auth y el
+        compartido manejan igual). Verificado en vivo: login con clave
+        incorrecta devuelve `{"error":"Contraseña incorrecta"}` (formato de
+        auth), un `save` de categoria con nombre vacío sigue devolviendo el
+        formato compartido — conviven sin pisarse.
+      También chocó `NotificationGatewayImpl` (mismo simple name que la de
+      `subscription-service`, en paquetes `.notification` distintos) — se
+      les dio nombre de bean explícito vía `@Component("...")` a ambas (acá
+      sí alcanzaba, `@Component.value()` sí es el nombre de bean).
+      Auditoría de tests corregida: de los "9 tests" que contaba al
+      principio, **6 no compilan** contra el código actual del standalone
+      (`Usuario`, `UseCaseConfig` y `NotificationGatewayImpl` cambiaron de
+      forma y los tests nunca se actualizaron — preexistente, no lo causó
+      esta migración). Solo se llevaron los 3 que sí compilan y pasan
+      (`UsuarioDataGatewayImplTest`, `EncrypterGatewayImplTest`,
+      `GlobalExceptionHandlerTest` → renombrado `AuthGlobalExceptionHandlerTest`).
+      Los otros 6 quedaron en el standalone tal cual, rotos — arreglarlos es
+      tarea aparte, no de esta migración.
+      Probado en vivo: registrar usuario (rol ADMIN, empresaId autogenerado
+      `EMP-<cedula>`), login (JWT real), endpoint protegido por JWT
+      (`/empleados`, extrae empresaId del token), login con clave incorrecta
+      y eliminar. Todavía NO conectado al gateway.
+- [ ] Cutover del gateway para auth (`Path=/api/pos/usuario/**` → puerto del monolito)
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
 - [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)
