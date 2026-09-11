@@ -403,7 +403,52 @@ antes de seguir.
       real), documentado para limpieza manual futura si hace falta.
       Todavía NO conectado al gateway.
 - [ ] Cutover del gateway para contabilidad-service (`Path=/api/pos/contabilidad/**` → puerto del monolito)
-- [ ] Migrar: nomina
+- [x] **Corrección: nomina-service SÍ estaba conectado al gateway** (2026-09-11)
+      — dije lo contrario al cerrar el paso de contabilidad-service, mal:
+      me guie por un comentario desactualizado en `PermisosInterceptor`
+      ("todavía no existe el servicio") sin verificar la config real. La
+      ruta `Path=/api/pos/nomina/**` → `http://localhost:8092` ya existía en
+      `gateway/application.yaml`. No hacía falta "resolver" nada, solo
+      migrar y hacer el cutover normal como con los demás módulos.
+- [x] **Tests de caracterización de nomina** (2026-09-11, previo a migrar,
+      regla 7) — 0 tests de UseCase antes de esto (el único test existente,
+      `ConceptoHoraExtra`, es de un modelo de dominio, no de un UseCase). 29
+      tests con Mockito puro. Los valores esperados de `NominaUseCaseTest`
+      se calcularon con un script aparte que replica la fórmula exacta
+      (no a mano) — corrieron en verde a la primera contra el standalone,
+      confirmando que el cálculo era el esperado. `NominaUseCaseTest` (12):
+      liquidación completa con exoneración/auxilio de transporte, salario
+      integral (sin auxilio, sin provisiones, IBC al 70%), salario alto no
+      exonerado con nivel de riesgo ARL, prorrateo por ingreso a mitad de
+      período, período duplicado, sin empleados activos, restricciones de
+      anular/marcar pagada. `EmpleadoUseCaseTest` (12): validaciones de
+      salario mínimo/integral, documento duplicado. `AcumuladoInicialUseCaseTest`
+      (5): upsert por empleado+año.
+- [x] **Migrar: nomina** (2026-09-11) — `domain/`, `application/` e
+      `infraestructure/` copiados byte a byte (`diff -r`). Sin http_client
+      (hoja). `GlobalExceptionHandler` es un subconjunto funcional del
+      compartido (mismos 2 casos con el mismo formato de respuesta, le
+      falta el catch-all de `Exception` que sí tiene el compartido) — se
+      omitió como en el caso normal, no como el de auth. Único ajuste:
+      `@Configuration("nominaUseCaseConfig")`.
+      **Detalle real encontrado**: el `build.gradle` original de nomina usa
+      Spring Boot **4.1.0**, el único de todo el proyecto — el resto
+      (incluido el monolito) está en 4.0.6. No se puede tener dos versiones
+      de Boot en un solo classpath, así que compiló contra el 4.0.6 del
+      monolito tal cual — sin ningún cambio de código necesario, los 29
+      tests pasaron a la primera. También traía `org.apache.pdfbox:pdfbox`
+      como dependencia — confirmado con `grep` que ningún archivo la usa
+      (dependencia muerta), no se copió al módulo del monolito.
+      Probado en vivo: parámetros legales, crear empleado, liquidar (los
+      valores coincidieron exactamente con los del test de caracterización),
+      bloqueo de período duplicado, marcar pagada. Limpié el empleado de
+      prueba; la nómina de prueba quedó en estado PAGADA (ya no se puede
+      anular por API una vez pagada, por diseño) — aislada bajo
+      `empresaId = "empresa-nomina-test"`, no afecta a ninguna empresa real.
+- [x] **Cutover del gateway para nomina** (2026-09-11) — `gateway/application.yaml`
+      ahora enruta `/api/pos/nomina/**` a `http://localhost:9000` (el
+      monolito) en vez de `http://localhost:8092` (nomina-service standalone,
+      que sigue levantándose para poder hacer rollback).
 - [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: inventario
 - [ ] Migrar: compra

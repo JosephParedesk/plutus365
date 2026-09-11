@@ -63,7 +63,12 @@ spring:
               predicates:
                 - Path=/api/pos/contabilidad/**
             - id: nomina-service
-              uri: http://localhost:8092
+              # Migrado al monolito modular (pos-backend/monolito-modular) el
+              # 2026-09-11. nomina-service standalone (puerto 8092) sigue
+              # corriendo en paralelo para poder hacer rollback (volver este
+              # uri a http://localhost:8092) durante el período de quemado —
+              # ver MIGRACION-MONOLITO-MODULAR.md.
+              uri: http://localhost:9000
               predicates:
                   - Path=/api/pos/nomina/**
 
