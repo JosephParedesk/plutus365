@@ -363,7 +363,46 @@ antes de seguir.
       (`/empleados`, extrae empresaId del token), login con clave incorrecta
       y eliminar. Todavía NO conectado al gateway.
 - [ ] Cutover del gateway para auth (`Path=/api/pos/usuario/**` → puerto del monolito)
-- [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
+- [x] **Tests de caracterización de contabilidad-service** (2026-09-11, previo
+      a migrar, regla 7) — 0 tests antes de esto. 54 tests nuevos con
+      Mockito puro (sin Spring, sin DB) sobre los 4 UseCase, corridos primero
+      contra el standalone (54/54 verdes, caracterizan el comportamiento
+      ACTUAL) y llevados sin cambios al módulo migrado (54/54 verdes ahí
+      también). No exhaustivos — es lo mínimo razonable para un módulo de
+      este tamaño, no cobertura completa: `AsientoContableUseCaseTest` (29,
+      el más importante — cubre la idempotencia de las 5 formas de generar
+      un asiento automático, incluida la excepción rara de
+      `generarDesdeSaldoInicialInventario` que NO es idempotente-silenciosa
+      como las demás, y la validación de partida doble),
+      `CuentaContableUseCaseTest` (11, inferencia de nivel/padre del código
+      PUC, siembra automática, restricciones de borrado),
+      `CentroCostoUseCaseTest` (8, CRUD y validaciones),
+      `EstadosFinancierosUseCaseTest` (6, escenarios de balance/resultados/
+      flujo/patrimonio — no exhaustivo dado lo grande de la lógica de
+      clasificación por clase PUC).
+- [x] **Migrar: contabilidad-service** (2026-09-11) — `domain/`,
+      `application/` e `infraestructure/` copiados byte a byte (`diff -r`).
+      Sin http_client (hoja — es el módulo del que todos dependen, nadie
+      depende de otro desde acá). `GlobalExceptionHandler` idéntico al
+      compartido (confirmado con `diff`, se omitió). Único ajuste:
+      `@Configuration("contabilidadUseCaseConfig")`. Sin colisiones nuevas
+      de bean esta vez (nombres de clase únicos en el proyecto).
+      Probado en vivo contra la base real (`empresa-contab-test`, empresa
+      ficticia nueva): listar cuentas siembra automáticamente el PUC base
+      (197 cuentas, coincide con lo documentado en CLAUDE.md), crear centro
+      de costo, generar asiento desde una venta simulada (cuentas correctas:
+      Caja/Venta de mercancías/IVA por pagar, `totalDebe == totalHaber`),
+      repetir la misma venta confirma la idempotencia (sigue en 1 asiento),
+      Balance General cuadra (`"cuadra":true`).
+      **No se pudo limpiar la empresa de prueba**: el propio `CuentaContableUseCase.eliminar`
+      impide borrar cuentas no personalizadas (todo el PUC base sembrado lo
+      es) — no hay forma de borrar esto por API, y este entorno sigue sin
+      cliente `mysql`/conector Python (mismo problema que con `plan_features`
+      al migrar subscription-service). Queda en la base real, aislado bajo
+      `empresaId = "empresa-contab-test"` (no colisiona con ninguna empresa
+      real), documentado para limpieza manual futura si hace falta.
+      Todavía NO conectado al gateway.
+- [ ] Cutover del gateway para contabilidad-service (`Path=/api/pos/contabilidad/**` → puerto del monolito)
 - [ ] Migrar: nomina
 - [ ] Migrar: empresa-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: inventario
