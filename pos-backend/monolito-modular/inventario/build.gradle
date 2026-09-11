@@ -1,0 +1,13 @@
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.apache.poi:poi-ooxml:5.3.0'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Ya no le pega por HTTP a estos servicios — llama directo a sus UseCase.
+	implementation project(':categoria')
+	implementation project(':proveedor')
+	implementation project(':contabilidad-service')
+}

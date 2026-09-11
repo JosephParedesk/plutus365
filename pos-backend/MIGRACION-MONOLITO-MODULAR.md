@@ -487,7 +487,47 @@ antes de seguir.
       `/api/pos/contabilidad/cuentas` después). No se probó la subida de
       logo (multipart) por tiempo — pendiente si hace falta más adelante.
       Todavía NO conectado al gateway (cutover no pedido esta vez).
-- [ ] Migrar: inventario
+- [x] **Migrar: inventario** (2026-09-11) — sin tests de caracterización esta
+      vez (pedido explícito del usuario, prioridad velocidad). Auditoría de
+      tests corregida de nuevo: de los "13 tests" contados al principio,
+      **solo 1 compila** (`GlobalExceptionHandlerTest`) — 6 referencian un
+      paquete viejo `com.surtiana.catalogo...` con clases de Venta/Recibo que
+      ya no existen (de antes de que venta-service se separara), y los otros
+      6 (hasta los de `Producto`) quedaron desactualizados contra el modelo
+      actual (`productoId`→`sku`, etc.). No se tocó nada del standalone.
+      `domain/`, `application/` e `infraestructure/` copiados byte a byte,
+      salvo los 3 `http_client` (ver abajo) y el `GlobalExceptionHandler`.
+      **Tres llamadas HTTP convertidas a locales de una** — los tres
+      servicios que consultaba ya estaban migrados:
+      `CategoriaConsultaGatewayImpl` → `CategoriaUseCase.listarCategorias`,
+      `ProveedorConsultaGatewayImpl` → `ProveedorUseCase.listarProveedores`,
+      `ContabilidadGatewayImpl` → `AsientoContableUseCase.generarDesdeSaldoInicialInventario`
+      (esta última ya no necesita el try/catch de conversión de excepción:
+      el UseCase ya lanza `RuntimeException` con el mismo mensaje que antes
+      había que extraer del body HTTP). Los 3 con bean nombrado explícito.
+      **Otro caso "raro" de `GlobalExceptionHandler`** (mismo patrón que
+      auth): devuelve `{"error": msg}`, no el formato compartido. Renombrado
+      a `InventarioGlobalExceptionHandler`, scopeado a
+      `infraestructure.entry_points` + `@Order(HIGHEST_PRECEDENCE)`.
+      **Bug real preexistente encontrado (no se toca, es aparte)**: el
+      frontend de inventario lee `error.response.data.message`, pero el
+      backend de inventario devuelve `error.response.data.error` — hoy en el
+      standalone los mensajes de validación específicos ("Stock insuficiente
+      para X...") nunca le llegan al usuario, siempre cae al fallback
+      genérico del frontend. Se preservó el comportamiento actual tal cual
+      (bug incluido) para no mezclar un fix con la migración estructural.
+      También encontrado: `application.properties` tenía
+      `spring.application.name=subscription-service` (copy-paste de otro
+      servicio, inofensivo — no afecta ruteo) y una config de recursos
+      estáticos (`spring.web.resources.static-locations`) sin ningún
+      endpoint real que suba archivos a esa carpeta — no se portó, es config
+      muerta.
+      Probado en vivo: registrar compra de un SKU nuevo crea el producto
+      (margen de venta 30% aplicado, kárdex con `ENTRADA_COMPRA`), descontar
+      stock funciona, y el error de "stock insuficiente" devuelve el formato
+      `{"error":...}` propio de inventario mientras categoría sigue con el
+      formato compartido — confirma que el scoping del handler funciona.
+      Todavía NO conectado al gateway.
 - [ ] Migrar: compra
 - [ ] Migrar: venta-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: facturacion-service
