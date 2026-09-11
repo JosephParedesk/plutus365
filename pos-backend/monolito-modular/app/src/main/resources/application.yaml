@@ -1,6 +1,5 @@
-# Todavía no reemplaza a ningún servicio en el gateway (server.port es un
-# puerto de prueba, no el real). Cuando se decida el cutover de categoria,
-# acá se agrega la ruta correspondiente en application.yaml del gateway.
+# Puerto fijo del monolito (distinto del rango 8080-8092 de los microservicios
+# standalone). El gateway le enruta /api/pos/categorias/** desde el 2026-09-11.
 spring:
   application:
     name: monolito-modular

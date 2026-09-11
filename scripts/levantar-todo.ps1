@@ -1,5 +1,6 @@
 # Apaga lo que esté corriendo en los puertos de Plutus365 y levanta los 13
-# microservicios desde cero, cada uno en su propia ventana de PowerShell.
+# microservicios + el monolito modular desde cero, cada uno en su propia
+# ventana de PowerShell.
 # Uso: .\levantar-todo.ps1
 
 # UsaEnvFile: true en el servicio cuyo .env de carpeta hay que inyectar como
@@ -8,6 +9,11 @@
 # inventario y subscription-service TAMBIÉN tienen un .env en su carpeta, pero
 # apunta a un puerto y una base de datos que no son los reales — cargarlo
 # rompería cosas, se deja fuera hasta que se audite ese .env aparte.
+# Tarea: nombre de la tarea de Gradle a correr (default 'bootRun'; el
+# monolito es multi-módulo así que hay que pedir el módulo :app explícito).
+# categoria-service (8083) sigue levantándose aunque el gateway ya no le
+# mande tráfico (ver su ruta en gateway/application.yaml) — se necesita
+# corriendo para poder hacer rollback durante el período de quemado.
 $servicios = @(
     @{ Nombre = "auth-service";          Carpeta = "auth";                  Puerto = 8080; UsaEnvFile = $true  }
     @{ Nombre = "subscription-service";  Carpeta = "subscription-service";  Puerto = 8081; UsaEnvFile = $false }
@@ -22,6 +28,7 @@ $servicios = @(
     @{ Nombre = "gateway";               Carpeta = "gateway";               Puerto = 8090; UsaEnvFile = $true  }
     @{ Nombre = "contabilidad-service";  Carpeta = "contabilidad-service";  Puerto = 8091; UsaEnvFile = $false }
     @{ Nombre = "nomina-service";        Carpeta = "nomina";                Puerto = 8092; UsaEnvFile = $false }
+    @{ Nombre = "monolito-modular";      Carpeta = "monolito-modular";      Puerto = 9000; UsaEnvFile = $true; Tarea = ":app:bootRun" }
 )
 
 $raiz = "C:\plutus365\pos-backend"
@@ -72,8 +79,9 @@ foreach ($s in $servicios) {
             $prefijoEnv = (Comandos-EnvFile $rutaEnv) + "; "
         }
     }
+    $tarea = if ($s.Tarea) { $s.Tarea } else { "bootRun" }
 
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$carpeta'; $prefijoEnv.\gradlew.bat bootRun" `
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$carpeta'; $prefijoEnv.\gradlew.bat $tarea" `
         -WindowStyle Normal
     Write-Host "  $($s.Nombre) (puerto $($s.Puerto)) - arrancando..." -ForegroundColor Green
 }

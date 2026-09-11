@@ -184,7 +184,20 @@ antes de seguir.
       `@ExceptionHandler(Exception.class)` genérico van a chocar
       (ambiguous handler) — no se resuelve todavía porque con un solo
       módulo no hay conflicto real que solucionar.
-- [ ] Decidir y ejecutar el cutover del gateway para categoria (`Path=/api/pos/categorias/**` → puerto del monolito) — deliberadamente no se hizo en el mismo paso que migrar el código (regla 3: cutover de tráfico real es un cambio de comportamiento aparte)
+- [x] **Cutover del gateway para categoria** (2026-09-11) — `gateway/application.yaml`
+      ahora enruta `/api/pos/categorias/**` a `http://localhost:9000` (el
+      monolito) en vez de `http://localhost:8083` (categoria-service
+      standalone, que sigue levantándose para poder hacer rollback). Probado
+      con un JWT real (firmado con el mismo `JWT_SECRET`, claim `empresaId`):
+      cliente → gateway (puerto 8090) → monolito → MySQL real, GET/POST/DELETE
+      los tres funcionan y el `empresaId` del JWT llega bien via
+      `X-Empresa-Id` hasta el UseCase. Puerto fijo del monolito: **9000**
+      (fuera del rango 8080-8092 de los standalone). `levantar-todo.ps1`
+      actualizado para levantar también `monolito-modular` (tarea Gradle
+      `:app:bootRun`, no `bootRun` a secas por ser multi-módulo) y para leer
+      su `.env` nuevo (`DB_PASSWORD`, mismo patrón que el resto).
+      Rollback si algo falla: volver el `uri` de esa ruta a
+      `http://localhost:8083` en `gateway/application.yaml`.
 - [ ] Migrar: proveedor, cliente, subscription-service, auth
 - [ ] Migrar: contabilidad-service (escribir tests de caracterización primero — 0 tests hoy)
 - [ ] Migrar: nomina
