@@ -48,6 +48,12 @@ public class EmpresaUseCase {
         return guardada;
     }
 
+    // Uso exclusivo del panel de super administrador (ver AdminUseCase en
+    // facturacion-service) — nunca se expone a una empresa normal.
+    public java.util.List<Empresa> listarTodas() {
+        return empresaGateway.listarTodas();
+    }
+
     public Empresa actualizarLogo(String empresaId, String logoUrl) {
         Empresa existente = empresaGateway.buscarPorEmpresaId(empresaId);
         if (existente == null)

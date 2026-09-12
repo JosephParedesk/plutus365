@@ -18,6 +18,13 @@ spring:
       server:
         webmvc:
           routes:
+            # Panel de super administrador (solo rol SUPERADMIN, ver
+            # PermisosInterceptor) — vive en facturacion-service porque ahí
+            # están las credenciales de Factus que administra.
+            - id: admin-plataforma
+              uri: ${MONOLITO_URL:http://localhost:9000}
+              predicates:
+                - Path=/api/pos/admin/**
             - id: auth-service
               uri: ${MONOLITO_URL:http://localhost:9000}
               predicates:

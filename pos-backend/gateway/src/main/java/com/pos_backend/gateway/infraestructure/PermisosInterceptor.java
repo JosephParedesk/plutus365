@@ -31,6 +31,7 @@ public class PermisosInterceptor implements HandlerInterceptor {
 
     // Prefijo de ruta -> módulo lógico
     private static final Map<String, String> MODULO_POR_RUTA = Map.ofEntries(
+            Map.entry("/api/pos/admin", "PLATAFORMA"), // panel de super admin (ver rol SUPERADMIN más abajo)
             Map.entry("/api/surtiana/inventario", "INVENTARIO"),
             Map.entry("/api/pos/categorias", "INVENTARIO"),
             Map.entry("/api/pos/proveedores", "COMPRAS"),
@@ -95,8 +96,20 @@ public class PermisosInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // ADMIN o cuentas sin rol asignado (compatibilidad con lo que ya existía) → acceso total
-        if (rol == null || rol.isBlank() || "ADMIN".equalsIgnoreCase(rol)) return true;
+        // PLATAFORMA (panel de super admin, ver AdminUseCase en facturacion-service):
+        // exige SUPERADMIN exacto — ni siquiera ADMIN de una empresa normal entra acá.
+        // SUPERADMIN nunca es asignable desde la app (ver ROLES_VALIDOS en
+        // UsuarioUseCase.crearEmpleado), solo a mano en la base de datos.
+        if ("PLATAFORMA".equals(modulo)) {
+            if (!"SUPERADMIN".equalsIgnoreCase(rol)) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Esto es solo para el super administrador de la plataforma");
+                return false;
+            }
+            return true;
+        }
+
+        // ADMIN, SUPERADMIN o cuentas sin rol asignado (compatibilidad con lo que ya existía) → acceso total
+        if (rol == null || rol.isBlank() || "ADMIN".equalsIgnoreCase(rol) || "SUPERADMIN".equalsIgnoreCase(rol)) return true;
 
         Map<String, String> permisosDelRol = MATRIZ.getOrDefault(rol.toUpperCase(), Map.of());
         String nivel = permisosDelRol.getOrDefault(modulo, "NONE");

@@ -1,6 +1,7 @@
 package com.pos_backend.facturacion.application.config;
 
 import com.pos_backend.facturacion.domain.model.gateway.*;
+import com.pos_backend.facturacion.domain.usecase.AdminUseCase;
 import com.pos_backend.facturacion.domain.usecase.ConfiguracionDianUseCase;
 import com.pos_backend.facturacion.domain.usecase.FacturaUseCase;
 import com.pos_backend.facturacion.domain.usecase.NotaCreditoUseCase;
@@ -24,6 +25,14 @@ public class UseCaseConfig {
             FacturaElectronicaGateway facturaElectronicaGateway
     ) {
         return new ConfiguracionDianUseCase(configuracionDianGateway, facturaElectronicaGateway);
+    }
+
+    @Bean
+    public AdminUseCase adminUseCase(
+            EmpresaConsultaGateway empresaConsultaGateway,
+            ConfiguracionDianGateway configuracionDianGateway
+    ) {
+        return new AdminUseCase(empresaConsultaGateway, configuracionDianGateway);
     }
 
     @Bean

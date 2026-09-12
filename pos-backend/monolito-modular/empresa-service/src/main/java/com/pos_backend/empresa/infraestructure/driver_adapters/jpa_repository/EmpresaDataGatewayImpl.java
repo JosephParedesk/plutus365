@@ -30,4 +30,11 @@ public class EmpresaDataGatewayImpl implements EmpresaGateway {
     public boolean existePorEmpresaId(String empresaId) {
         return empresaDataJpaRepository.existsById(empresaId);
     }
+
+    @Override
+    public java.util.List<Empresa> listarTodas() {
+        return empresaDataJpaRepository.findAll().stream()
+                .map(empresaMapper::toEmpresa)
+                .toList();
+    }
 }

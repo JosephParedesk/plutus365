@@ -25,6 +25,15 @@ public class EmpresaConsultaGatewayImpl implements EmpresaConsultaGateway {
         } catch (NoSuchElementException ex) {
             return null;
         }
+        return aRemota(e);
+    }
+
+    @Override
+    public java.util.List<EmpresaRemota> listarTodas() {
+        return empresaUseCase.listarTodas().stream().map(this::aRemota).toList();
+    }
+
+    private EmpresaRemota aRemota(Empresa e) {
         return new EmpresaRemota(
                 e.getEmpresaId(), e.getTipoPersona(), e.getTipoDocumento(), e.getNumeroDocumento(), e.getDv(),
                 e.getRegimenFiscal(), e.getRazonSocial(), e.getNombres(), e.getApellidos(), e.getCorreo(),
