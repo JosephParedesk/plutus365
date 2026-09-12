@@ -1,9 +1,11 @@
 package com.pos_backend.facturacion.infraestructure.driver_adapters.factus;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pos_backend.facturacion.domain.model.ConfiguracionDian;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -23,7 +25,19 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class FactusHttpClient {
 
-    private final RestClient restClient = RestClient.create();
+    // RestClient.create() a secas dejaba que Spring Boot 4 eligiera su
+    // convertidor JSON por autoconfiguración, y desde que el monolito junta
+    // spring-boot-starter-web (Jackson 3, tools.jackson.*) con el
+    // jackson-databind clásico que usa este archivo (com.fasterxml.jackson.*
+    // — necesario porque la API de Factus se modela con JsonNode clásico),
+    // a veces elegía el conversor de Jackson 3 y tiraba "Type definition
+    // error" al no reconocer com.fasterxml.jackson.databind.JsonNode como
+    // uno de sus propios tipos. Se fuerza acá el conversor clásico para este
+    // cliente en particular, sin tocar la configuración global de Jackson
+    // del resto de la app.
+    private final RestClient restClient = RestClient.builder()
+            .messageConverters(converters -> converters.add(0, new MappingJackson2HttpMessageConverter(new ObjectMapper())))
+            .build();
     private final String baseUrl;
     private final Map<String, TokenCache> tokensPorEmpresa = new ConcurrentHashMap<>();
 

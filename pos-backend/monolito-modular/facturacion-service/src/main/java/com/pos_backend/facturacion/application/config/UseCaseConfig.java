@@ -30,9 +30,11 @@ public class UseCaseConfig {
     @Bean
     public AdminUseCase adminUseCase(
             EmpresaConsultaGateway empresaConsultaGateway,
-            ConfiguracionDianGateway configuracionDianGateway
+            ConfiguracionDianGateway configuracionDianGateway,
+            FacturaGateway facturaGateway,
+            UsuarioConsultaGateway usuarioConsultaGateway
     ) {
-        return new AdminUseCase(empresaConsultaGateway, configuracionDianGateway);
+        return new AdminUseCase(empresaConsultaGateway, configuracionDianGateway, facturaGateway, usuarioConsultaGateway);
     }
 
     @Bean

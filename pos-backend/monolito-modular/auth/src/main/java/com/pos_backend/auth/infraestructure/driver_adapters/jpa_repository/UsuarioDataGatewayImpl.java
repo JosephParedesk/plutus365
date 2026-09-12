@@ -64,4 +64,11 @@ public class UsuarioDataGatewayImpl implements UsuarioGateway {
                 .map(usuarioMapper::toUsuario)
                 .toList();
     }
+
+    @Override
+    public java.util.List<Usuario> listarTodos() {
+        return usuarioDataJpaRepository.findAll().stream()
+                .map(usuarioMapper::toUsuario)
+                .toList();
+    }
 }

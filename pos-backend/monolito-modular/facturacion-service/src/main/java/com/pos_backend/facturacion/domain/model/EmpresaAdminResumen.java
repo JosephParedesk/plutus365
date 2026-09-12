@@ -15,4 +15,5 @@ public class EmpresaAdminResumen {
     private String numeroDocumento;
     private String correo;
     private boolean factusConfigurado;
+    private int facturasEmitidas;
 }

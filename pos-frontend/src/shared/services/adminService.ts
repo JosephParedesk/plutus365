@@ -1,5 +1,5 @@
 import api from './api'
-import type { ConfiguracionDian, ConfiguracionDianRequest } from './facturacionService'
+import type { ConfiguracionDian, ConfiguracionDianRequest, RangoNumeracion } from './facturacionService'
 
 // Panel de super administrador (rol SUPERADMIN) — Plutus365 es quien tramita
 // las credenciales de Factus con cada empresa, así que las carga acá en vez
@@ -15,11 +15,23 @@ export interface EmpresaAdminResumen {
     numeroDocumento: string
     correo: string
     factusConfigurado: boolean
+    facturasEmitidas: number
+}
+
+export interface UsuarioAdminResumen {
+    cedula: string
+    nombre: string
+    correo: string
+    rol: string
+    empresaId: string
 }
 
 export const adminService = {
     listarEmpresas: () =>
         api.get<EmpresaAdminResumen[]>('/api/pos/admin/empresas'),
+
+    listarUsuarios: () =>
+        api.get<UsuarioAdminResumen[]>('/api/pos/admin/usuarios'),
 
     // 404 si esa empresa todavía no tiene Factus configurado
     obtenerFactus: (empresaId: string) =>
@@ -27,4 +39,9 @@ export const adminService = {
 
     guardarFactus: (empresaId: string, data: ConfiguracionDianRequest) =>
         api.put<ConfiguracionDian>(`/api/pos/admin/empresas/${empresaId}/factus`, data),
+
+    // codigoDocumento: 21 factura, 22 nota crédito, 23 nota débito, 24 documento
+    // soporte, 26 nómina — los rangos que Factus le asignó a esa empresa.
+    rangosNumeracion: (empresaId: string, codigoDocumento: string) =>
+        api.get<RangoNumeracion[]>(`/api/pos/admin/empresas/${empresaId}/factus/rangos-numeracion`, { params: { codigoDocumento } }),
 }

@@ -2,6 +2,8 @@ package com.pos_backend.facturacion.infraestructure.entry_points;
 
 import com.pos_backend.facturacion.domain.model.ConfiguracionDian;
 import com.pos_backend.facturacion.domain.model.EmpresaAdminResumen;
+import com.pos_backend.facturacion.domain.model.UsuarioAdminResumen;
+import com.pos_backend.facturacion.domain.model.gateway.FacturaElectronicaGateway.RangoNumeracion;
 import com.pos_backend.facturacion.domain.usecase.AdminUseCase;
 import com.pos_backend.facturacion.domain.usecase.ConfiguracionDianUseCase;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,20 @@ public class AdminController {
     @GetMapping("/empresas")
     public ResponseEntity<List<EmpresaAdminResumen>> listarEmpresas() {
         return ResponseEntity.ok(adminUseCase.listarEmpresas());
+    }
+
+    @GetMapping("/usuarios")
+    public ResponseEntity<List<UsuarioAdminResumen>> listarUsuarios() {
+        return ResponseEntity.ok(adminUseCase.listarUsuarios());
+    }
+
+    // codigoDocumento: 21 factura, 22 nota crédito, 23 nota débito, 24 documento
+    // soporte, 26 nómina — los rangos que Factus le asignó a esta empresa.
+    @GetMapping("/empresas/{empresaId}/factus/rangos-numeracion")
+    public ResponseEntity<List<RangoNumeracion>> rangosNumeracion(
+            @PathVariable String empresaId,
+            @RequestParam String codigoDocumento) {
+        return ResponseEntity.ok(configuracionDianUseCase.listarRangosNumeracion(empresaId, codigoDocumento));
     }
 
     @GetMapping("/empresas/{empresaId}/factus")

@@ -236,6 +236,12 @@ public class UsuarioUseCase {
         return usuarioGateway.listarPorEmpresa(empresaId);
     }
 
+    // Uso exclusivo del panel de super administrador (ver AdminUseCase en
+    // facturacion-service) — nunca se expone a una empresa normal.
+    public java.util.List<Usuario> listarTodos() {
+        return usuarioGateway.listarTodos();
+    }
+
     public void eliminarEmpleado(String cedula, String token) {
         String tokenLimpio = token.replace("Bearer ", "");
         String rolSolicitante = jwtGateway.extraerRol(tokenLimpio);

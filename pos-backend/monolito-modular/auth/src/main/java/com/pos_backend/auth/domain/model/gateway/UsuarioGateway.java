@@ -21,4 +21,7 @@ int contarPorEmpresa(String empresaId);
 
 java.util.List<Usuario> listarPorEmpresa(String empresaId);
 
+// Uso exclusivo del panel de super administrador — nunca se expone a una empresa normal.
+java.util.List<Usuario> listarTodos();
+
 }
