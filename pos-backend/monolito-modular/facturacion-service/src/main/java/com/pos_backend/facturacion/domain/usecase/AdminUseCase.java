@@ -6,6 +6,7 @@ import com.pos_backend.facturacion.domain.model.Factura;
 import com.pos_backend.facturacion.domain.model.UsuarioAdminResumen;
 import com.pos_backend.facturacion.domain.model.gateway.ConfiguracionDianGateway;
 import com.pos_backend.facturacion.domain.model.gateway.EmpresaConsultaGateway;
+import com.pos_backend.facturacion.domain.model.gateway.FacturaElectronicaGateway;
 import com.pos_backend.facturacion.domain.model.gateway.FacturaGateway;
 import com.pos_backend.facturacion.domain.model.gateway.UsuarioConsultaGateway;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class AdminUseCase {
     private final ConfiguracionDianGateway configuracionDianGateway;
     private final FacturaGateway facturaGateway;
     private final UsuarioConsultaGateway usuarioConsultaGateway;
+    private final FacturaElectronicaGateway facturaElectronicaGateway;
 
     public List<EmpresaAdminResumen> listarEmpresas() {
         List<EmpresaRemota> empresas = empresaConsultaGateway.listarTodas();
@@ -43,7 +45,24 @@ public class AdminUseCase {
             int aceptadas = (int) facturas.stream().filter(f -> "ACEPTADA".equals(f.getEstado())).count();
             int rechazadas = (int) facturas.stream().filter(f -> "RECHAZADA".equals(f.getEstado())).count();
             int error = (int) facturas.stream().filter(f -> "ERROR".equals(f.getEstado())).count();
-            Integer foliosAsignados = config != null ? config.getFoliosAsignados() : null;
+
+            // Cupo real de Factus (bolsa de documentos), no el número cargado a mano —
+            // ver FacturaElectronicaGateway.listarSuscripciones. Si la empresa no tiene
+            // Factus activo o sus credenciales fallan, se deja en null (candado en el
+            // frontend) en vez de tumbar el listado completo de empresas.
+            Integer foliosAsignados = null;
+            Integer foliosRestantes = null;
+            if (config != null && Boolean.TRUE.equals(config.getActivo())) {
+                try {
+                    var suscripciones = facturaElectronicaGateway.listarSuscripciones(config);
+                    if (!suscripciones.isEmpty() && !suscripciones.stream().anyMatch(FacturaElectronicaGateway.InfoSuscripcion::cupoIlimitado)) {
+                        foliosAsignados = suscripciones.stream().mapToInt(FacturaElectronicaGateway.InfoSuscripcion::documentosAsignados).sum();
+                        foliosRestantes = suscripciones.stream().mapToInt(FacturaElectronicaGateway.InfoSuscripcion::documentosDisponibles).sum();
+                    }
+                } catch (RuntimeException ignored) {
+                    // Credenciales rotas o Factus caído — no bloquea el resto del panel.
+                }
+            }
 
             return new EmpresaAdminResumen(
                     e.getEmpresaId(),
@@ -66,7 +85,7 @@ public class AdminUseCase {
                     rechazadas,
                     error,
                     foliosAsignados,
-                    foliosAsignados != null ? foliosAsignados - facturas.size() : null
+                    foliosRestantes
             );
         }).toList();
     }

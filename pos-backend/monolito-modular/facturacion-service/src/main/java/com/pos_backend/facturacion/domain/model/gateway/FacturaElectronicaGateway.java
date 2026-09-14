@@ -22,11 +22,25 @@ public interface FacturaElectronicaGateway {
      */
     java.util.List<RangoNumeracion> listarRangosNumeracion(ConfiguracionDian config, String codigoDocumento);
 
-    // TEMPORAL — exploración: devuelve el JSON crudo de /v2/subscriptions para
-    // confirmar los nombres de campo reales antes de tipar InfoSuscripcion.
-    // Borrar este método cuando se reemplace por el tipado (ver conversación
-    // 2026-09-14 sobre conectar "folios disponibles" con Factus de verdad).
-    String consultarSuscripcionRaw(ConfiguracionDian config);
+    /**
+     * Cupo real de documentos electrónicos contratado con Factus (bolsa de
+     * documentos) — reemplaza al campo foliosAsignados cargado a mano.
+     * Verificado contra GET /v2/subscriptions en producción 2026-09-14: la
+     * respuesta trae un arreglo (normalmente una sola entrada, "Facturación",
+     * que agrupa factura/notas/documento soporte bajo un mismo cupo).
+     */
+    java.util.List<InfoSuscripcion> listarSuscripciones(ConfiguracionDian config);
+
+    record InfoSuscripcion(
+            String nombre,
+            Integer documentosAsignados,
+            Integer documentosConsumidos,
+            Integer documentosDisponibles,
+            boolean cupoIlimitado,
+            boolean activa,
+            boolean expirada,
+            Integer diasHastaVencer
+    ) {}
 
     record RangoNumeracion(
             Long id,

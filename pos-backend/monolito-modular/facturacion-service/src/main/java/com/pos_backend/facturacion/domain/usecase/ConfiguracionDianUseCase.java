@@ -27,13 +27,6 @@ public class ConfiguracionDianUseCase {
         return facturaElectronicaGateway.listarRangosNumeracion(config, codigoDocumento);
     }
 
-    // TEMPORAL — ver nota en FacturaElectronicaGateway.consultarSuscripcionRaw.
-    public String consultarSuscripcionRaw(String empresaId) {
-        ConfiguracionDian config = configuracionDianGateway.buscarPorEmpresaId(empresaId);
-        if (config == null)
-            throw new NoSuchElementException("Configura primero tus credenciales de Factus en Configuración");
-        return facturaElectronicaGateway.consultarSuscripcionRaw(config);
-    }
 
     public ConfiguracionDian guardar(ConfiguracionDian config, String empresaId) {
         config.setEmpresaId(empresaId);

@@ -53,8 +53,22 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
     }
 
     @Override
-    public String consultarSuscripcionRaw(ConfiguracionDian config) {
-        return http.getDocumento(config, "/v2/subscriptions").toString();
+    public java.util.List<InfoSuscripcion> listarSuscripciones(ConfiguracionDian config) {
+        JsonNode data = http.getDocumento(config, "/v2/subscriptions").path("data");
+        java.util.List<InfoSuscripcion> suscripciones = new ArrayList<>();
+        for (JsonNode s : data) {
+            suscripciones.add(new InfoSuscripcion(
+                    s.path("name").asText(null),
+                    s.path("has_unlimited_quota").asBoolean(false) ? null : s.path("documents_quota").asInt(),
+                    s.path("documents_consumed").asInt(0),
+                    s.path("has_unlimited_quota").asBoolean(false) ? null : s.path("documents_available").asInt(),
+                    s.path("has_unlimited_quota").asBoolean(false),
+                    s.path("is_active").asBoolean(false),
+                    s.path("has_expired").asBoolean(false),
+                    s.path("days_until_expiration").asInt(0)
+            ));
+        }
+        return suscripciones;
     }
 
     @Override
