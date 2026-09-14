@@ -601,7 +601,13 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         // gravable de la línea (sin IVA, con el descuento ya neteado — ver
         // VentaItem.java), así que se manda esa dividida entre la cantidad, y no se
         // repite el descuento aparte para no aplicarlo dos veces.
-        m.put("price", formatoMoneda(item.getValorTotal() / item.getCantidad()));
+        // formatoMoneda (2 decimales) redondearía el precio unitario y, al multiplicarlo
+        // de vuelta por la cantidad, Factus recalcula un total de línea distinto al
+        // valorTotal real — ahí sale el "La suma de todos los detalles de pago no es
+        // igual al total de la factura" por 1 centavo. Con más decimales en el precio
+        // (práctica estándar en facturación electrónica, ver anexo técnico DIAN sobre
+        // redondeos) price*cantidad reproduce el valorTotal exacto.
+        m.put("price", formatoMonedaPrecision(item.getValorTotal() / item.getCantidad(), 4));
         m.put("discount_rate", "0.00");
         // Sin catálogo UNSPSC propio: "94" (unidad) y "999" (estándar de adopción del
         // contribuyente) son los defaults documentados por Factus para quien no lo tiene.
@@ -669,5 +675,9 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
 
     private static String formatoMoneda(Double valor) {
         return String.format(Locale.US, "%.2f", valor != null ? valor : 0.0);
+    }
+
+    private static String formatoMonedaPrecision(Double valor, int decimales) {
+        return String.format(Locale.US, "%." + decimales + "f", valor != null ? valor : 0.0);
     }
 }
