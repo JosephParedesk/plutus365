@@ -18,7 +18,8 @@ public class CorsConfig {
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
                 "http://localhost:5174",
-                "https://*.vercel.app"
+                "https://*.vercel.app",
+                "https://*.cloudfront.net" // frontend en S3+CloudFront (AWS) — reemplazar/ampliar cuando haya dominio propio
         ));
 
         config.setAllowedHeaders(List.of("*"));
