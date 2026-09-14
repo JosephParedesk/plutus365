@@ -1,7 +1,12 @@
-# Stack local de prueba (no apunta a tu MySQL real): levanta una base nueva
-# y vacía dentro del contenedor, solo para validar que las imágenes de
-# monolito-modular y gateway arrancan y se conectan entre sí. Usa un archivo
-# .env en esta misma carpeta (ver .env.example) con tus propios valores.
+# Este mismo archivo sirve para probar en local y para correr en el EC2 de
+# producción — todo sale de .env (ver .env.example). MySQL persiste en el
+# volumen `mysql_data`: en el EC2, eso ES la base de datos real de Plutus365.
+#
+# mem_limit por servicio: ponytail, calibrado a mano para que 2 JVMs + MySQL +
+# Caddy quepan en los 2GB de un t4g.small con margen chico para el SO (hay
+# swap de colchón en el user-data del EC2, ver scripts de deploy). Si el uso
+# real de RAM anda pegado al límite seguido, subir a t4g.medium en vez de
+# tocar estos números.
 services:
   mysql:
     image: mysql:8.0
@@ -9,7 +14,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ecommerce
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -17,6 +22,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+    mem_limit: 512m
+    restart: unless-stopped
 
   monolito:
     build: ./monolito-modular
@@ -37,9 +44,12 @@ services:
       MAIL_FROM: ${MAIL_FROM}
       CERT_ENCRYPTION_KEY: ${CERT_ENCRYPTION_KEY}
       FACTUS_BASE_URL: ${FACTUS_BASE_URL}
+      FACTUS_SANDBOX_URL: ${FACTUS_SANDBOX_URL}
       FRONTEND_URL: ${FRONTEND_URL}
     ports:
-      - "9000:9000"
+      - "127.0.0.1:9000:9000"
+    mem_limit: 900m
+    restart: unless-stopped
 
   gateway:
     build: ./gateway
@@ -49,7 +59,25 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       MONOLITO_URL: http://monolito:9000
     ports:
-      - "8090:8090"
+      - "127.0.0.1:8090:8090"
+    mem_limit: 350m
+    restart: unless-stopped
+
+  # Único servicio expuesto a internet (80/443): certificado HTTPS automático
+  # apenas cambies ":80" por tu dominio en el Caddyfile (ver ese archivo).
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - gateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    mem_limit: 100m
+    restart: unless-stopped
 
 volumes:
   mysql_data:
+  caddy_data:

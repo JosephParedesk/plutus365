@@ -72,6 +72,10 @@ app:
 cert:
   encryption:
     key: ${CERT_ENCRYPTION_KEY:}
+# Cada empresa elige ambiente en su ConfiguracionDian (switch factusSandbox en el
+# panel de super admin) — estas dos URLs no se eligen acá, solo se pueden sobreescribir.
 factus:
   base:
-    url: ${FACTUS_BASE_URL:https://api-sandbox.factus.com.co}
+    url: ${FACTUS_BASE_URL:https://api.factus.com.co}
+  sandbox:
+    url: ${FACTUS_SANDBOX_URL:https://api-sandbox.factus.com.co}
