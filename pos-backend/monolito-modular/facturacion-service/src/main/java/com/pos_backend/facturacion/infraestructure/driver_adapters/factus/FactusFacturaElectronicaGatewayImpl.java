@@ -53,6 +53,11 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
     }
 
     @Override
+    public String consultarSuscripcionRaw(ConfiguracionDian config) {
+        return http.getDocumento(config, "/v2/subscriptions").toString();
+    }
+
+    @Override
     public void eliminarNoValidada(ConfiguracionDian config, String tipoDocumento, String referenceCode) {
         // Facturas usa "/destroy/reference/", los demás solo "/reference/" — verificado
         // uno por uno contra la colección oficial de Postman de Factus, no es simétrico.

@@ -42,6 +42,12 @@ public class AdminController {
         return ResponseEntity.ok(configuracionDianUseCase.listarRangosNumeracion(empresaId, codigoDocumento));
     }
 
+    // TEMPORAL — ver nota en FacturaElectronicaGateway.consultarSuscripcionRaw.
+    @GetMapping("/empresas/{empresaId}/factus/suscripcion-raw")
+    public ResponseEntity<String> suscripcionRaw(@PathVariable String empresaId) {
+        return ResponseEntity.ok(configuracionDianUseCase.consultarSuscripcionRaw(empresaId));
+    }
+
     @GetMapping("/empresas/{empresaId}/factus")
     public ResponseEntity<ConfiguracionDian> obtenerFactus(@PathVariable String empresaId) {
         return ResponseEntity.ok(configuracionDianUseCase.obtener(empresaId));

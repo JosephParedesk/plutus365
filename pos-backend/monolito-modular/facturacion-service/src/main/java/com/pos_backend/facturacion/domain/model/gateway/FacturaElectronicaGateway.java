@@ -22,6 +22,12 @@ public interface FacturaElectronicaGateway {
      */
     java.util.List<RangoNumeracion> listarRangosNumeracion(ConfiguracionDian config, String codigoDocumento);
 
+    // TEMPORAL — exploración: devuelve el JSON crudo de /v2/subscriptions para
+    // confirmar los nombres de campo reales antes de tipar InfoSuscripcion.
+    // Borrar este método cuando se reemplace por el tipado (ver conversación
+    // 2026-09-14 sobre conectar "folios disponibles" con Factus de verdad).
+    String consultarSuscripcionRaw(ConfiguracionDian config);
+
     record RangoNumeracion(
             Long id,
             String document,
