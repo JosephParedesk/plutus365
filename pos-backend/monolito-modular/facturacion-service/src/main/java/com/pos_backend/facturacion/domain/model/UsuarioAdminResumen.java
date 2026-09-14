@@ -14,4 +14,5 @@ public class UsuarioAdminResumen {
     private String correo;
     private String rol;
     private String empresaId;
+    private Long planId;
 }

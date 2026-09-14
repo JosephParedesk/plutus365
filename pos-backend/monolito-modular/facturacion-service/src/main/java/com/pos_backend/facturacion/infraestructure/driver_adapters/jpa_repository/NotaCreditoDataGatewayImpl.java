@@ -7,6 +7,7 @@ import com.pos_backend.facturacion.domain.model.gateway.NotaCreditoGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,7 +44,9 @@ public class NotaCreditoDataGatewayImpl implements NotaCreditoGateway {
         return repository.countByEmpresaId(empresaId);
     }
 
-    @Override public void eliminar(Long notaCreditoId, String empresaId) {
+    // Un deleteByX derivado necesita transacción propia — ver el mismo comentario
+    // en NominaElectronicaDataGatewayImpl (bug real encontrado ahí).
+    @Override @Transactional public void eliminar(Long notaCreditoId, String empresaId) {
         repository.deleteByNotaCreditoIdAndEmpresaId(notaCreditoId, empresaId);
     }
 

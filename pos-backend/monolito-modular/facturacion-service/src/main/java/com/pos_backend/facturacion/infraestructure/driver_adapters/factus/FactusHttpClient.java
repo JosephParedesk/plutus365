@@ -38,11 +38,24 @@ public class FactusHttpClient {
     private final RestClient restClient = RestClient.builder()
             .messageConverters(converters -> converters.add(0, new MappingJackson2HttpMessageConverter(new ObjectMapper())))
             .build();
-    private final String baseUrl;
+    private final String produccionUrl;
+    private final String sandboxUrl;
+    // El token se invalida en verificarCredenciales, que corre en cada guardado —
+    // así cambiar de ambiente/credenciales nunca reutiliza un token del otro.
     private final Map<String, TokenCache> tokensPorEmpresa = new ConcurrentHashMap<>();
 
-    public FactusHttpClient(@Value("${factus.base.url}") String baseUrl) {
-        this.baseUrl = baseUrl;
+    public FactusHttpClient(@Value("${factus.base.url}") String produccionUrl,
+                            @Value("${factus.sandbox.url}") String sandboxUrl) {
+        this.produccionUrl = produccionUrl;
+        this.sandboxUrl = sandboxUrl;
+    }
+
+    public static String ambiente(ConfiguracionDian config) {
+        return Boolean.TRUE.equals(config.getFactusSandbox()) ? "PRUEBAS" : "PRODUCCION";
+    }
+
+    private String baseUrl(ConfiguracionDian config) {
+        return Boolean.TRUE.equals(config.getFactusSandbox()) ? sandboxUrl : produccionUrl;
     }
 
     private record TokenCache(String accessToken, Instant expiraEn) {}
@@ -58,7 +71,7 @@ public class FactusHttpClient {
         String token = obtenerToken(config);
         try {
             restClient.delete()
-                    .uri(baseUrl + path)
+                    .uri(baseUrl(config) + path)
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .toBodilessEntity();
@@ -72,7 +85,7 @@ public class FactusHttpClient {
         String token = obtenerToken(config);
         try {
             return restClient.get()
-                    .uri(baseUrl + path)
+                    .uri(baseUrl(config) + path)
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .body(JsonNode.class);
@@ -86,7 +99,7 @@ public class FactusHttpClient {
         String token = obtenerToken(config);
         try {
             return restClient.patch()
-                    .uri(baseUrl + path)
+                    .uri(baseUrl(config) + path)
                     .header("Authorization", "Bearer " + token)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(body)
@@ -102,7 +115,7 @@ public class FactusHttpClient {
         String token = obtenerToken(config);
         try {
             return restClient.post()
-                    .uri(baseUrl + path)
+                    .uri(baseUrl(config) + path)
                     .header("Authorization", "Bearer " + token)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(body)
@@ -128,7 +141,7 @@ public class FactusHttpClient {
         JsonNode respuesta;
         try {
             respuesta = restClient.post()
-                    .uri(baseUrl + "/oauth/token")
+                    .uri(baseUrl(config) + "/oauth/token")
                     .header("Accept", "application/json")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(form)

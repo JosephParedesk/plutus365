@@ -7,6 +7,7 @@ import java.util.Optional;
 public interface DocumentoSoporteDataJpaRepository extends JpaRepository<DocumentoSoporteData, Long> {
     List<DocumentoSoporteData> findByEmpresaIdOrderByDocumentoSoporteIdDesc(String empresaId);
     Optional<DocumentoSoporteData> findByDocumentoSoporteIdAndEmpresaId(Long id, String empresaId);
-    Optional<DocumentoSoporteData> findByCompraIdAndEmpresaId(Long compraId, String empresaId);
+    // Puede haber varios intentos en ERROR por compra — se toma el último, igual que facturas.
+    Optional<DocumentoSoporteData> findFirstByCompraIdAndEmpresaIdOrderByDocumentoSoporteIdDesc(Long compraId, String empresaId);
     void deleteByDocumentoSoporteIdAndEmpresaId(Long documentoSoporteId, String empresaId);
 }

@@ -45,7 +45,15 @@ public class NominaElectronicaUseCase {
         if (config == null)
             throw new RuntimeException("Configura primero tus credenciales de Factus en Configuración");
 
-        facturaElectronicaGateway.eliminarNoValidada(config, "NOMINA", n.getReferenceCode());
+        try {
+            facturaElectronicaGateway.eliminarNoValidada(config, "NOMINA", n.getReferenceCode());
+        } catch (RuntimeException e) {
+            // Si el intento original falló antes de que Factus llegara a crear el
+            // documento (ej. el módulo de nómina electrónica no estaba habilitado en
+            // la cuenta, o las credenciales fallaron), no hay nada que borrar allá —
+            // Factus responde "no encontrado". Eso no debe bloquear la limpieza local:
+            // se borra igual para que el usuario pueda reintentar.
+        }
         nominaElectronicaGateway.eliminar(nominaElectronicaId, empresaId);
     }
 
@@ -88,7 +96,13 @@ public class NominaElectronicaUseCase {
         n.setCreadoPor(creadoPor);
         n.setEstado("ERROR");
 
-        String referenceCode = "NOM-" + nominaId + "-" + empleadoId;
+        // Incluye empresaId: Factus usa una cuenta de sandbox compartida entre muchos
+        // desarrolladores, y nominaId/empleadoId son enteros chicos (1, 2, 3...) que
+        // fácilmente coinciden con los de otra app probando al mismo tiempo — eso
+        // hace que Factus responda "Query did not return a unique result" al buscar
+        // por reference_code. empresaId (el NIT/cédula real) hace el código único de
+        // verdad entre empresas distintas, sin perder la idempotencia por período+empleado.
+        String referenceCode = "NOM-" + empresaId + "-" + nominaId + "-" + empleadoId;
         n.setReferenceCode(referenceCode);
 
         try {

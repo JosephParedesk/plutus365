@@ -5,6 +5,7 @@ import com.pos_backend.facturacion.domain.model.gateway.FacturaGateway;
 import com.pos_backend.facturacion.infraestructure.mapper.FacturaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,7 +37,12 @@ public class FacturaDataGatewayImpl implements FacturaGateway {
         return repository.findByEmpresaId(empresaId).stream().map(mapper::toDomain).toList();
     }
 
+    // Un deleteByX derivado (no el deleteById base de JpaRepository) necesita
+    // transacción propia — sin esto tira "No EntityManager with actual
+    // transaction available ... cannot reliably process 'remove' call"
+    // (encontrado real al probar el flujo equivalente de nómina electrónica).
     @Override
+    @Transactional
     public void eliminar(Long facturaId, String empresaId) {
         repository.deleteByFacturaIdAndEmpresaId(facturaId, empresaId);
     }

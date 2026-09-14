@@ -19,7 +19,7 @@ public class UsuarioConsultaGatewayImpl implements UsuarioConsultaGateway {
     @Override
     public List<UsuarioAdminResumen> listarTodos() {
         return usuarioUseCase.listarTodos().stream()
-                .map(u -> new UsuarioAdminResumen(u.getCedula(), u.getNombre(), u.getCorreo(), u.getRol(), u.getEmpresaId()))
+                .map(u -> new UsuarioAdminResumen(u.getCedula(), u.getNombre(), u.getCorreo(), u.getRol(), u.getEmpresaId(), u.getPlanId()))
                 .toList();
     }
 }

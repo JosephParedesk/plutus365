@@ -29,4 +29,7 @@ dependencies {
 	// Solo para el panel de super admin (AdminUseCase): listar usuarios de
 	// todas las empresas. Ver EmpresaConsultaGateway para el mismo patrón.
 	implementation project(':auth')
+
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

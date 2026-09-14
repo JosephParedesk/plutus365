@@ -36,5 +36,15 @@ public class ConfiguracionDian {
     // /v2/adjustment-payrolls.
     private String notaAjusteNominaNumberingRangeId;
 
+    // Factus entrega a cada empresa credenciales de producción Y de un sandbox
+    // privado (client_id/secret distintos). true = api-sandbox; null/false =
+    // producción. Las 4 credenciales de arriba deben ser las de ese ambiente.
+    private Boolean factusSandbox;
+
+    // Cupo de documentos electrónicos contratado con Factus (ej. la "bolsa" de 500
+    // documentos del correo de activación). Null = sin límite conocido/controlado
+    // acá. Lo carga el super admin a mano — Factus no expone este número por API.
+    private Integer foliosAsignados;
+
     private Boolean activo;
 }

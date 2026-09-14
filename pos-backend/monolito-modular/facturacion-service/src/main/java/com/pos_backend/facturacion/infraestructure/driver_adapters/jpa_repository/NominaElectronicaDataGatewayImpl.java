@@ -5,6 +5,7 @@ import com.pos_backend.facturacion.domain.model.gateway.NominaElectronicaGateway
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,8 +21,14 @@ public class NominaElectronicaDataGatewayImpl implements NominaElectronicaGatewa
     }
 
     @Override public NominaElectronica buscarPorNominaYEmpleado(Long nominaId, Long empleadoId, String empresaId) {
-        return repository.findByNominaIdAndEmpleadoIdAndEmpresaId(nominaId, empleadoId, empresaId)
-                .map(this::toDomain).orElse(null);
+        List<NominaElectronicaData> registros =
+                repository.findByNominaIdAndEmpleadoIdAndEmpresaIdOrderByNominaElectronicaIdDesc(nominaId, empleadoId, empresaId);
+        return registros.stream()
+                .filter(d -> "ACEPTADA".equals(d.getEstado()))
+                .findFirst()
+                .or(() -> registros.stream().findFirst())
+                .map(this::toDomain)
+                .orElse(null);
     }
 
     @Override public NominaElectronica buscarPorId(Long nominaElectronicaId, String empresaId) {
@@ -37,7 +44,10 @@ public class NominaElectronicaDataGatewayImpl implements NominaElectronicaGatewa
         return repository.findByNominaIdAndEmpresaId(nominaId, empresaId).stream().map(this::toDomain).toList();
     }
 
-    @Override public void eliminar(Long nominaElectronicaId, String empresaId) {
+    // Un deleteByX derivado (no el deleteById base de JpaRepository) necesita
+    // transacción propia — sin esto tira "No EntityManager with actual
+    // transaction available ... cannot reliably process 'remove' call".
+    @Override @Transactional public void eliminar(Long nominaElectronicaId, String empresaId) {
         repository.deleteByNominaElectronicaIdAndEmpresaId(nominaElectronicaId, empresaId);
     }
 

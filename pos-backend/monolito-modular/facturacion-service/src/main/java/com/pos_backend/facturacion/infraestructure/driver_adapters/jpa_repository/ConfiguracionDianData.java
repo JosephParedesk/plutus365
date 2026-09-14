@@ -34,5 +34,9 @@ public class ConfiguracionDianData {
     private Long notaAjusteDocumentoSoporteNumberingRangeId;
     @Column(length = 50) private String notaAjusteNominaNumberingRangeId;
 
+    private Boolean factusSandbox;
+
+    private Integer foliosAsignados;
+
     private Boolean activo;
 }

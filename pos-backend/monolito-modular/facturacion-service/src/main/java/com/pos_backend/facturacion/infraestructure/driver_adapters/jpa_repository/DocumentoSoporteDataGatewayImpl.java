@@ -7,6 +7,7 @@ import com.pos_backend.facturacion.domain.model.gateway.DocumentoSoporteGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,14 +33,16 @@ public class DocumentoSoporteDataGatewayImpl implements DocumentoSoporteGateway 
     }
 
     @Override public DocumentoSoporte buscarPorCompraId(Long compraId, String empresaId) {
-        return repository.findByCompraIdAndEmpresaId(compraId, empresaId).map(this::toDomain).orElse(null);
+        return repository.findFirstByCompraIdAndEmpresaIdOrderByDocumentoSoporteIdDesc(compraId, empresaId).map(this::toDomain).orElse(null);
     }
 
     @Override public List<DocumentoSoporte> listar(String empresaId) {
         return repository.findByEmpresaIdOrderByDocumentoSoporteIdDesc(empresaId).stream().map(this::toDomain).toList();
     }
 
-    @Override public void eliminar(Long documentoSoporteId, String empresaId) {
+    // Un deleteByX derivado necesita transacción propia — ver el mismo comentario
+    // en NominaElectronicaDataGatewayImpl (bug real encontrado ahí).
+    @Override @Transactional public void eliminar(Long documentoSoporteId, String empresaId) {
         repository.deleteByDocumentoSoporteIdAndEmpresaId(documentoSoporteId, empresaId);
     }
 

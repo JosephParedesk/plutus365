@@ -24,6 +24,8 @@ public class ConfiguracionDianMapper {
         c.setNominaNumberingRangeId(data.getNominaNumberingRangeId());
         c.setNotaAjusteDocumentoSoporteNumberingRangeId(data.getNotaAjusteDocumentoSoporteNumberingRangeId());
         c.setNotaAjusteNominaNumberingRangeId(data.getNotaAjusteNominaNumberingRangeId());
+        c.setFactusSandbox(data.getFactusSandbox());
+        c.setFoliosAsignados(data.getFoliosAsignados());
         c.setActivo(data.getActivo());
         return c;
     }
@@ -42,6 +44,8 @@ public class ConfiguracionDianMapper {
         data.setNominaNumberingRangeId(c.getNominaNumberingRangeId());
         data.setNotaAjusteDocumentoSoporteNumberingRangeId(c.getNotaAjusteDocumentoSoporteNumberingRangeId());
         data.setNotaAjusteNominaNumberingRangeId(c.getNotaAjusteNominaNumberingRangeId());
+        data.setFactusSandbox(c.getFactusSandbox());
+        data.setFoliosAsignados(c.getFoliosAsignados());
         data.setActivo(c.getActivo());
         return data;
     }
