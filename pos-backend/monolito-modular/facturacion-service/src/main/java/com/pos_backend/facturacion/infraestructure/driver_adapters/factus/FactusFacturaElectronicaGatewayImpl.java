@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.pos_backend.facturacion.domain.model.*;
 import com.pos_backend.facturacion.domain.model.gateway.FacturaElectronicaGateway;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -21,9 +20,6 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
 
     private final FactusHttpClient http;
     private final DivipolaMunicipioResolver municipioResolver;
-
-    @Value("${factus.base.url}")
-    private String baseUrl;
 
     // package-private (no static/private) para poder probarla directo desde el test,
     // sin tener que instanciar la clase completa con sus dependencias de Spring.
@@ -87,7 +83,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         body.put("payment_details", List.of(pagoContado(venta.getTotal())));
 
         JsonNode data = http.postDocumento(config, "/v2/bills/validate", body).path("data");
-        return resultado(data, data.path("number").asText(null));
+        return resultado(config, data, data.path("number").asText(null));
     }
 
     @Override
@@ -103,7 +99,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         body.put("payment_details", List.of(pagoContado(nota.getTotal())));
 
         JsonNode data = http.postDocumento(config, "/v2/credit-notes/validate", body).path("data");
-        return resultado(data, data.path("number").asText(null));
+        return resultado(config, data, data.path("number").asText(null));
     }
 
     @Override
@@ -120,7 +116,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         body.put("payment_details", List.of(pagoContado(nota.getTotal())));
 
         JsonNode data = http.postDocumento(config, "/v2/debit-notes/validate", body).path("data");
-        return resultado(data, data.path("number").asText(null));
+        return resultado(config, data, data.path("number").asText(null));
     }
 
     @Override
@@ -135,7 +131,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         body.put("payment_details", List.of(pagoContado(documento.getTotal())));
 
         JsonNode data = http.postDocumento(config, "/v2/support-documents/validate", body).path("data");
-        return resultado(data, data.path("number").asText(null));
+        return resultado(config, data, data.path("number").asText(null));
     }
 
     @Override
@@ -165,7 +161,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
                 data.path("cuds").asText(null),
                 data.path("links").path("qr").asText(null),
                 null,
-                baseUrl.contains("sandbox") ? "PRUEBAS" : "PRODUCCION",
+                FactusHttpClient.ambiente(config),
                 mensaje
         );
     }
@@ -192,7 +188,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
                 aceptada,
                 data.path("number").asText(data.path("payroll_number").asText(null)),
                 null, null, null,
-                baseUrl.contains("sandbox") ? "PRUEBAS" : "PRODUCCION",
+                FactusHttpClient.ambiente(config),
                 mensaje
         );
     }
@@ -252,7 +248,13 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
     private Map<String, Object> proveedor(ProveedorRemota proveedor, EmpresaRemota empresa) {
         Map<String, Object> p = new HashMap<>();
         p.put("identification_document_code", "31");
-        p.put("identification", proveedor.getNit());
+        // Proveedor guarda el NIT como texto libre ("900111220-0" o "900123456").
+        // El sandbox compartido aceptaba el string tal cual; el privado de cada
+        // cliente valida contra la DIAN (reglas DSAJ21/DSAJ24b) y exige número y DV
+        // por separado.
+        String[] nitDv = nitYDv(proveedor.getNit(), proveedor.getNombre());
+        p.put("identification", nitDv[0]);
+        p.put("dv", nitDv[1]);
         p.put("names", proveedor.getNombre());
         p.put("address", proveedor.getDireccion() != null && !proveedor.getDireccion().isBlank()
                 ? proveedor.getDireccion() : "No especificada");
@@ -271,6 +273,31 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         if (proveedor.getCorreo() != null && !proveedor.getCorreo().isBlank()) p.put("email", proveedor.getCorreo());
         if (proveedor.getTelefono() != null && !proveedor.getTelefono().isBlank()) p.put("phone", proveedor.getTelefono());
         return p;
+    }
+
+    // Devuelve {número, dv}. Si el NIT trae DV tras el guion y no cuadra, se avisa
+    // acá con un mensaje claro en vez de esperar el rechazo DSAJ24b de la DIAN.
+    static String[] nitYDv(String nit, String nombreProveedor) {
+        String[] partes = (nit == null ? "" : nit).split("-", 2);
+        String numero = partes[0].replaceAll("\\D", "");
+        if (numero.isEmpty())
+            throw new RuntimeException("El proveedor " + nombreProveedor + " no tiene NIT — complétalo antes de emitir el documento soporte");
+        String dv = String.valueOf(calcularDv(numero));
+        String dvGuardado = partes.length > 1 ? partes[1].replaceAll("\\D", "") : "";
+        if (!dvGuardado.isEmpty() && !dvGuardado.equals(dv))
+            throw new RuntimeException("El NIT del proveedor " + nombreProveedor + " (" + nit + ") tiene el dígito de verificación mal: para "
+                    + numero + " debería ser " + dv + ". Corrígelo en Proveedores.");
+        return new String[]{numero, dv};
+    }
+
+    // Algoritmo módulo 11 de la DIAN. Verificado con NITs reales: DIAN 800197268-4.
+    static int calcularDv(String numero) {
+        int[] pesos = {3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71};
+        int suma = 0;
+        for (int i = 0; i < numero.length(); i++)
+            suma += Character.getNumericValue(numero.charAt(numero.length() - 1 - i)) * pesos[i];
+        int r = suma % 11;
+        return r < 2 ? r : 11 - r;
     }
 
     private List<Map<String, Object>> itemsDocumentoSoporte(List<DocumentoSoporte.ItemDocumentoSoporte> items) {
@@ -314,7 +341,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         body.put("deductions", deducciones(detalle));
 
         JsonNode data = http.postDocumento(config, "/v2/payrolls", body).path("data");
-        return resultado(data, data.path("number").asText(null));
+        return resultado(config, data, data.path("number").asText(null));
     }
 
     private Map<String, Object> periodoLiquidacion(NominaRemota nomina) {
@@ -482,9 +509,13 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         return codigo;
     }
 
-    private ResultadoEmision resultado(JsonNode data, String numeroDocumento) {
+    private ResultadoEmision resultado(ConfiguracionDian config, JsonNode data, String numeroDocumento) {
         boolean aceptada = data.path("is_validated").asBoolean(false);
-        String cufeOCude = data.hasNonNull("cufe") ? data.get("cufe").asText() : data.path("cude").asText(null);
+        // Factura manda "cufe", notas "cude", documento soporte "cuds" (verificado
+        // 2026-09-12 contra GET /v2/support-documents/{number} en sandbox privado).
+        String cufeOCude = data.hasNonNull("cufe") ? data.get("cufe").asText()
+                : data.hasNonNull("cude") ? data.get("cude").asText()
+                : data.path("cuds").asText(null);
         String mensaje = data.hasNonNull("errors") ? data.get("errors").toString() : null;
         return new ResultadoEmision(
                 aceptada,
@@ -492,7 +523,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
                 cufeOCude,
                 data.path("links").path("qr").asText(null),
                 data.path("links").path("public_url").asText(null),
-                baseUrl.contains("sandbox") ? "PRUEBAS" : "PRODUCCION",
+                FactusHttpClient.ambiente(config),
                 mensaje
         );
     }
@@ -515,9 +546,15 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         if (cliente.getDv() != null && !cliente.getDv().isBlank()) c.put("dv", cliente.getDv());
         boolean juridica = "JURIDICA".equals(cliente.getTipoPersona());
         c.put("legal_organization_code", juridica ? "1" : "2");
-        if (juridica) c.put("company", cliente.getRazonSocial());
-        else c.put("names", ((cliente.getNombres() != null ? cliente.getNombres() : "") + " "
-                + (cliente.getApellidos() != null ? cliente.getApellidos() : "")).trim());
+        // Factus exige "names" siempre, sea persona natural o jurídica (igual que en
+        // proveedor() más arriba) — para jurídica además se manda "company".
+        if (juridica) {
+            c.put("company", cliente.getRazonSocial());
+            c.put("names", cliente.getRazonSocial());
+        } else {
+            c.put("names", ((cliente.getNombres() != null ? cliente.getNombres() : "") + " "
+                    + (cliente.getApellidos() != null ? cliente.getApellidos() : "")).trim());
+        }
         c.put("tribute_code", "ZZ");
         c.put("responsibilities", List.of("R-99-PN"));
         // "CO" por defecto: no tenemos catálogo de países para clientes extranjeros.
