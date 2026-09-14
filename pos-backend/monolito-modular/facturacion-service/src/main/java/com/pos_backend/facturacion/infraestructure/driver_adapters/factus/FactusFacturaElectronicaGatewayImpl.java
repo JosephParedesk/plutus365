@@ -99,7 +99,7 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
             body.put("numbering_range_id", config.getFacturaNumberingRangeId());
         body.put("customer", customer(cliente, resolverMunicipio(cliente, empresa)));
         body.put("items", items(venta.getItems()));
-        body.put("payment_details", List.of(pagoContado(venta.getTotal())));
+        body.put("payment_details", List.of(pagoContado(totalFacturaCalculado(venta.getItems()))));
 
         JsonNode data = http.postDocumento(config, "/v2/bills/validate", body).path("data");
         return resultado(config, data, data.path("number").asText(null));
@@ -601,13 +601,12 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
         // gravable de la línea (sin IVA, con el descuento ya neteado — ver
         // VentaItem.java), así que se manda esa dividida entre la cantidad, y no se
         // repite el descuento aparte para no aplicarlo dos veces.
-        // formatoMoneda (2 decimales) redondearía el precio unitario y, al multiplicarlo
-        // de vuelta por la cantidad, Factus recalcula un total de línea distinto al
-        // valorTotal real — ahí sale el "La suma de todos los detalles de pago no es
-        // igual al total de la factura" por 1 centavo. Con más decimales en el precio
-        // (práctica estándar en facturación electrónica, ver anexo técnico DIAN sobre
-        // redondeos) price*cantidad reproduce el valorTotal exacto.
-        m.put("price", formatoMonedaPrecision(item.getValorTotal() / item.getCantidad(), 4));
+        // Factus exige el precio con exactamente 2 decimales (más decimales = "El
+        // formato del campo precio es inválido"), así que el redondeo de esta división
+        // es inevitable — el descuadre de 1 centavo contra payment_details se resuelve
+        // calculando ese total con esta MISMA fórmula redondeada (ver totalFacturaCalculado),
+        // en vez de mandar venta.getTotal() tal cual.
+        m.put("price", formatoMoneda(item.getValorTotal() / item.getCantidad()));
         m.put("discount_rate", "0.00");
         // Sin catálogo UNSPSC propio: "94" (unidad) y "999" (estándar de adopción del
         // contribuyente) son los defaults documentados por Factus para quien no lo tiene.
@@ -652,13 +651,33 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
     }
 
     static Map<String, Object> tax(String tipoIva) {
-        double rate = switch (tipoIva) {
+        return taxPorTasa(tasaIva(tipoIva), "EXCLUIDO".equals(tipoIva));
+    }
+
+    private static double tasaIva(String tipoIva) {
+        return switch (tipoIva) {
             case "GENERAL_19" -> 19.00;
             case "REDUCIDO_5" -> 5.00;
             case "EXENTO", "EXCLUIDO" -> 0.00;
             default -> throw new RuntimeException("Tipo de IVA no reconocido para facturar con Factus: " + tipoIva);
         };
-        return taxPorTasa(rate, "EXCLUIDO".equals(tipoIva));
+    }
+
+    // Reproduce, con los mismos números redondeados que ya viajan en "items" (price a
+    // 2 decimales), el total que Factus va a calcular internamente (price*cantidad +
+    // impuesto, por línea) — así payment_details siempre cuadra exacto con lo que
+    // Factus reconstruye, sin depender de que venta.getTotal() coincida centavo a
+    // centavo con esa reconstrucción.
+    private double totalFacturaCalculado(List<VentaRemota.ItemRemoto> items) {
+        double total = 0.0;
+        for (VentaRemota.ItemRemoto item : items) {
+            double precioUnitario = Double.parseDouble(formatoMoneda(item.getValorTotal() / item.getCantidad()));
+            double base = Math.round(precioUnitario * item.getCantidad() * 100.0) / 100.0;
+            double tasa = tasaIva(item.getTipoIva());
+            double impuesto = Math.round(base * tasa / 100.0 * 100.0) / 100.0;
+            total += base + impuesto;
+        }
+        return Math.round(total * 100.0) / 100.0;
     }
 
     private static Map<String, Object> taxPorTasa(Double rate) {
@@ -675,9 +694,5 @@ public class FactusFacturaElectronicaGatewayImpl implements FacturaElectronicaGa
 
     private static String formatoMoneda(Double valor) {
         return String.format(Locale.US, "%.2f", valor != null ? valor : 0.0);
-    }
-
-    private static String formatoMonedaPrecision(Double valor, int decimales) {
-        return String.format(Locale.US, "%." + decimales + "f", valor != null ? valor : 0.0);
     }
 }
